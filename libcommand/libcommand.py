@@ -2,7 +2,7 @@
 This Module provides the `Command` Class which launches a Single Child Process
 in asynchronous Mode and captures possible Errors.
 
-:version: 2020-07-11
+:version: 2020-08-25
 
 :author: Bodo Hugo Barwich
 '''
@@ -48,6 +48,8 @@ class Command(object):
     self._process_status = -1
     self._bdebug = False
 
+    if commandline is not None :
+      self._scommand = commandline
 
 
 
@@ -83,12 +85,35 @@ class Command(object):
 
 
   def Check(self):
+    irng = 0
+
     if self._process is not None :
       if self._process.poll() is not None :
+        #------------------------
+        #A Child Process has finished
+
+        #Read the Process Status Code
         self._process_status = self._process.returncode
 
         if self._bdebug :
-          self._arr_rpt.append("prc ({}): done.".format(self._process.pid))
+          self._arr_rpt.append("prc ({}): done.".format(self._pid))
+
+        #Read the Last Messages from the Sub Process
+        self.Read()
+
+      else :
+        #------------------------
+        #The Child Process is running
+
+        irng = 1
+
+        if self._bdebug :
+          self._arr_rpt.append("prc ({}): Read checking ...\n".format(self._pid))
+
+        #Read the Messages from the Sub Process
+        self.Read()
+
+    return irng
 
 
   def Read(self):
