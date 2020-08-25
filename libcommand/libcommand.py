@@ -98,6 +98,7 @@ class Command(object):
 
       events = self._selector.select(self._read_timeout)
       scnk = None
+      brd = True
 
       for key in events:
         if key.fileobj == self._process.stdout :
@@ -116,10 +117,17 @@ class Command(object):
           else :
             brd = False
 
+          if not brd :
+            if self._bdebug :
+              self._arr_rpt.append("pipe ({}): transmission done.\n".format(key.fd))
+
+            self._selector.unregister(self._process.stdout)
+
         elif key.fileobj == self._process.stderr :
           scnk = self._process.stderr.read(self._package_size)
 
-          print("got err chunk: '{}'".format(str(scnk, sys.stderr.encoding)))
+          if self._bdebug :
+            self._arr_rpt.append("pipe ({}): reading error ...\n".format(key.fd))
 
           if scnk is not None :
             scnk = str(scnk, sys.stderr.encoding)
@@ -130,6 +138,12 @@ class Command(object):
               brd = False
           else :
             brd = False
+
+          if not brd :
+            if self._bdebug :
+              self._arr_rpt.append("pipe ({}): transmission done.\n".format(key.fd))
+
+            self._selector.unregister(self._process.stderr)
 
 
 
