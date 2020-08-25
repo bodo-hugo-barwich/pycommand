@@ -17,9 +17,10 @@ from shlex import split
 
 class Command(object):
   '''
-  This is a Class interact with a physical Text File in a easy and convenient way.
+  This is a Class launches a Child Process and reads its STDOUT and STDERR continously
+  and stores them in Memory
 
-  It offers Methods read and write from and to the File
+  It offers Methods to access the Result Output and possible Errors
   '''
 
 
@@ -97,9 +98,11 @@ class Command(object):
         self._pid = -1
         self._process = None
 
+    #if self._scommand != ''
+
 
   def Check(self):
-    irng = 0
+    brng = False
 
     if self._process is not None :
       if self._process.poll() is not None :
@@ -119,7 +122,7 @@ class Command(object):
         #------------------------
         #The Child Process is running
 
-        irng = 1
+        brng = True
 
         if self._bdebug :
           self._arr_rpt.append("prc ({}): Read checking ...".format(self._pid))
@@ -130,7 +133,7 @@ class Command(object):
       #if self._process.poll() is not None
     #if self._process is not None
 
-    return irng
+    return brng
 
 
   def Read(self):
@@ -281,6 +284,10 @@ class Command(object):
     return rsnm
 
 
+  def getReadTimeout(self):
+    return self._read_timeout
+
+
   def isRunning(self):
     brng = False
 
@@ -308,4 +315,7 @@ class Command(object):
   def getErrorCode(self):
     return self._err_code
 
+
+  def isDebug(self):
+    return self._bdebug
 
