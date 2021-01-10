@@ -31,7 +31,7 @@ class Command(object):
 
   def __init__(self, commandline = None):
     '''
-    A `Command` Object can be instanciated with a `commandline`
+    A `Command` Object can be instantiated with a `commandline`
     '''
 
     self._pid = -1
@@ -60,6 +60,15 @@ class Command(object):
 
 
   def Launch(self):
+    '''
+    This Method launches the process defined by `commandline` in a separate child process
+
+    :returns: Returns `True` if the launch of the child process succeeded
+    :rtype: boolean
+    '''
+
+    brs = False
+
     if self._scommand != '' :
       #------------------------
       #Execute the configured Command
@@ -87,6 +96,8 @@ class Command(object):
         self._selector.register(self._process.stdout, selectors.EVENT_READ, None)
         self._selector.register(self._process.stderr, selectors.EVENT_READ, None)
 
+        brs = True
+
         if self._bdebug :
           self._arr_rpt.append("Sub Process {}: Launch OK - PID ({})"\
           .format(sprcnm, self._pid))
@@ -100,8 +111,19 @@ class Command(object):
 
     #if self._scommand != ''
 
+    return brs
+
+
 
   def Check(self):
+    '''
+    This Method checks whether the child process is still running and reads
+    its Output and Errors with the `Read()` Method
+
+    :returns: Returns `True` if the child process is still running
+    :rtype: boolean
+    '''
+
     brng = False
 
     if self._process is not None :
