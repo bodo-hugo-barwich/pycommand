@@ -32,6 +32,9 @@ class Command(object):
   def __init__(self, commandline = None):
     '''
     A `Command` Object can be instantiated with a `commandline`
+
+    :param commandline: The commmand to be executed in the child process
+    :type commandline: string
     '''
 
     self._pid = -1
@@ -122,6 +125,8 @@ class Command(object):
 
     :returns: Returns `True` if the child process is still running
     :rtype: boolean
+
+    :see: `Command.Read()`
     '''
 
     brng = False
@@ -159,6 +164,15 @@ class Command(object):
 
 
   def Read(self):
+    '''
+    This Method checks whether there is data available on the STDOUT and STDERR pipes
+    and reads any available data.
+    The collected data can be read with the `getReportString()` and `getErrorString()` Methods
+
+    :see: `Command.getReportString()`
+    :see: `Command.getErrorString()`
+    '''
+
     if self._process is not None :
       if self._bdebug :
         self._arr_rpt.append("prc ({}) [{}]: try read ...".format(self._pid, self._process_status))
