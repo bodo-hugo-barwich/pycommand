@@ -1,3 +1,6 @@
 #Project Files
 .project
 .pydevproject
+
+#Python Compiling Files
+*__pycache__*/*

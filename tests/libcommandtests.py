@@ -40,7 +40,7 @@ class TestCommand(unittest.TestCase):
     print("{} - go ...".format(sys._getframe().f_code.co_name))
 
 
-    arrrs = runCommand(["{} {} {}".format(self._stestscript, self._itestpause, self._iteststatus)])
+    arrrs = runCommand("{} {} {}".format(self._stestscript, self._itestpause, self._iteststatus))
 
 
     print("EXIT CODE: '", arrrs[2], "'");

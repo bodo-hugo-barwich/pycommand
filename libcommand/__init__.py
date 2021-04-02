@@ -5,6 +5,13 @@ from libcommand.command import Command
 
 
 def runCommand(scommandline = ''):
+  '''
+  This Method launches a process defined by `scommandline` in a separate child process
+
+  :returns: Returns a Tuple with the STDOUT, STDERR and EXIT Code
+  :rtype: tuple
+  '''
+
   arrrs = ['', '', 0]
 
   if(scommandline != ''):
