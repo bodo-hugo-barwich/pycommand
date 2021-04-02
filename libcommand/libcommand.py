@@ -32,6 +32,7 @@ class Command(object):
   def __init__(self, commandline = None):
     '''
     A `Command` Object can be instantiated with a `commandline`
+    `commmandline` is the executable plus the command line parameters passed to it
 
     :param commandline: The commmand to be executed in the child process
     :type commandline: string
