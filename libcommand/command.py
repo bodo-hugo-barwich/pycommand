@@ -308,7 +308,7 @@ class Command(object):
         rsnm = "({}) '{}'".format(self._pid, self._name)
       else :
         #Add its Command
-        rsnm = "({}) '{}'".format(self._pid, self._command)
+        rsnm = "({}) '{}'".format(self._pid, self._scommand)
 
     else :  #The Process is not running
       if self._name != '' :
@@ -316,7 +316,7 @@ class Command(object):
         rsnm = "'{}'".format(self._name)
       else :
         #Identify the Process by its Command
-        rsnm = "'{}'".format(self._command)
+        rsnm = "'{}'".format(self._scommand)
 
     return rsnm
 
