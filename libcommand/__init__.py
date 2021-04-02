@@ -1,3 +1,11 @@
+'''
+Definition of the libcommand Package
+Definition of the runCommand() Function
+
+@version: 2021-04-02
+
+@author: Bodo Hugo Barwich
+'''
 __all__ = ['command']
 
 from libcommand.command import Command
@@ -14,22 +22,14 @@ def runCommand(scommandline = ''):
 
   arrrs = ['', '', 0]
 
-  if(scommandline != ''):
-    cmd = Command(scommandline)
+  cmd = Command(scommandline)
 
-    if(cmd.Launch()):
-      cmd.Check()
+  if(cmd.Launch()):
+    cmd.Check()
 
-      arrrs[0] = cmd.getReportString()
-      arrrs[1] = cmd.getErrorString()
-      arrrs[2] = cmd.getErrorCode()
-    else:
-      arrrs[2] = 1
-
-  else:
-    arrrs[0] = ''
-    arrrs[1] = ''
-    arrrs[2] = 3
+  arrrs[0] = cmd.getReportString()
+  arrrs[1] = cmd.getErrorString()
+  arrrs[2] = cmd.getErrorCode()
 
   return arrrs
 
@@ -42,6 +42,10 @@ def runCommandWithOptions(commandoptions = {}):
 
     if(cmd.Launch()):
       cmd.Check()
+
+      arrrs[0] = cmd.getReportString()
+      arrrs[1] = cmd.getErrorString()
+      arrrs[2] = cmd.getErrorCode()
     else:
       arrrs[2] = 1
 
