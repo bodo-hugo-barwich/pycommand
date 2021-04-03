@@ -6,11 +6,6 @@ in asynchronous Mode and captures possible Errors.
 
 :author: Bodo Hugo Barwich
 '''
-from quodlibet.config import options
-from pyatspi.Accessibility import setTimeout
-from orca.scripts import self_voicing
-from distro import name
-import code
 __docformat__ = "restructuredtext en"
 
 import sys
