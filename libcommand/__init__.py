@@ -2,7 +2,7 @@
 Definition of the libcommand Package
 Definition of the runCommand() Function
 
-@version: 2021-04-02
+@version: 2021-04-03
 
 @author: Bodo Hugo Barwich
 '''
@@ -25,7 +25,7 @@ def runCommand(scommandline = ''):
   cmd = Command(scommandline)
 
   if(cmd.Launch()):
-    cmd.Check()
+    cmd.Wait()
 
   arrrs[0] = cmd.getReportString()
   arrrs[1] = cmd.getErrorString()
@@ -41,7 +41,7 @@ def runCommandWithOptions(commandoptions = {}):
     cmd = Command(commandoptions['command'])
 
     if(cmd.Launch()):
-      cmd.Check()
+      cmd.Wait()
 
       arrrs[0] = cmd.getReportString()
       arrrs[1] = cmd.getErrorString()

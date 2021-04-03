@@ -2,7 +2,7 @@
 This Module provides the `Command` Class which launches a Single Child Process
 in asynchronous Mode and captures possible Errors.
 
-:version: 2020-08-25
+:version: 2021-04-03
 
 :author: Bodo Hugo Barwich
 '''
@@ -18,7 +18,7 @@ from shlex import split
 
 class Command(object):
   '''
-  This is a Class launches a Child Process and reads its STDOUT and STDERR continously
+  This is a Class launches a Child Process and reads its STDOUT and STDERR continuously
   and stores them in Memory
 
   It offers Methods to access the Result Output and possible Errors
