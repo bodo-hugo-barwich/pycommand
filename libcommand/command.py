@@ -11,6 +11,7 @@ __docformat__ = "restructuredtext en"
 import sys
 import subprocess
 import selectors
+import time
 from shlex import split
 
 
@@ -45,6 +46,7 @@ class Command(object):
     self._selector = None
     self._package_size = 8192
     self._read_timeout = 0
+    self._execution_timeout = -1
     self._arr_rpt = []
     self._arr_err = []
     self._sreport = None
@@ -226,6 +228,68 @@ class Command(object):
               self._arr_rpt.append("pipe ({}): transmission done.".format(key.fd))
 
             self._selector.unregister(self._process.stderr)
+
+
+  def Wait(self):
+    '''
+    This Method continuously checks whether the child process is still running with the `Check()` Method.
+    If an Execution Timeout is established the child process is terminated when the time limit is reached
+
+    :returns: Returns `True` if the child process has finished correctly
+    :rtype: boolean
+
+    :see: `Command.Check()`
+    '''
+    irng = 1
+    brs = False
+
+    sprcnm = self.getNameComplete()
+
+    itmrng = -1
+    itmrngstrt = -1
+    itmrngend = -1
+
+    if(self._execution_timeout > -1):
+      itmrng = 0
+      itmrngstrt = time.time()
+
+    while(irng > 0):
+
+      #Check the Sub Process
+      irng = int(self.Check())
+
+      if(irng > 0):
+        if(self._execution_timeout > -1):
+          itmrngend = time.time()
+
+          itmrng = itmrngend - itmrngstrt
+
+          if(self._bdebug):
+            self._arr_rpt.append("wait tm rng: '{}'\n".format(itmrng))
+
+          if(itmrng >= self._execution_timeout):
+            self._arr_err.append("Sub Process {}: Execution timed out!\n".format(sprcnm))
+            self._arr_err.append("Execution Time '{} / {}'\n".format(itmrng, self._execution_timeout))
+            self._arr_err.append("Process will be terminated.\n")
+
+            if(self._err_code < 4):
+              self._err_code = 4
+
+            #Terminate the Timed Out Sub Process
+            self.Terminate()
+            #Mark the Sub Process as finished with Error
+            irng = -1
+
+          #if(itmrng >= self._execution_timeout)
+        #if(self._execution_timeout > -1)
+      # if(irng > 0)
+    #while(irng > 0):
+
+    if(irng == 0):
+      #Mark as Finished correctly
+      brs = True
+
+    return brs
 
 
 
