@@ -10,6 +10,7 @@ from quodlibet.config import options
 from pyatspi.Accessibility import setTimeout
 from orca.scripts import self_voicing
 from distro import name
+import code
 __docformat__ = "restructuredtext en"
 
 import sys
@@ -267,7 +268,7 @@ class Command(object):
           scnk = self._process.stdout.read(self._package_size)
 
           if self._bdebug :
-            self._arr_rpt.append("pipe ({}): reading report ...".format(key.fd))
+            self._arr_rpt.append("pipe ({}): reading report ...".format(key[0].fd))
 
           if scnk is not None :
             scnk = str(scnk, sys.stdout.encoding)
@@ -281,15 +282,16 @@ class Command(object):
 
           if not brd :
             if self._bdebug :
-              self._arr_rpt.append("pipe ({}): transmission done.".format(key.fd))
+              self._arr_rpt.append("pipe ({}): transmission done.".format(key[0].fd))
 
             self._selector.unregister(self._process.stdout)
+            self._process.stdout.close()
 
         elif key[0].fileobj == self._process.stderr :
           scnk = self._process.stderr.read(self._package_size)
 
           if self._bdebug :
-            self._arr_rpt.append("pipe ({}): reading error ...".format(key.fd))
+            self._arr_rpt.append("pipe ({}): reading error ...".format(key[0].fd))
 
           if scnk is not None :
             scnk = str(scnk, sys.stderr.encoding)
@@ -303,9 +305,10 @@ class Command(object):
 
           if not brd :
             if self._bdebug :
-              self._arr_rpt.append("pipe ({}): transmission done.".format(key.fd))
+              self._arr_rpt.append("pipe ({}): transmission done.".format(key[0].fd))
 
             self._selector.unregister(self._process.stderr)
+            self._process.stderr.close()
 
 
   def Wait(self):
@@ -423,6 +426,7 @@ class Command(object):
 
     #Resource can only be freed if the Sub Process has terminated
     if not self.isRunning() :
+      self._selector.close()
       self._selector = None
 
 
@@ -503,6 +507,10 @@ class Command(object):
     return self._err_code
 
 
+  def getProcessStatus(self):
+    return self._process_status
+
+
   def isDebug(self):
     return self._bdebug
 
@@ -519,4 +527,5 @@ class Command(object):
   debug = property(isDebug, setDebug)
   report = property(getReportString)
   error = property(getErrorString)
-  status = property(getErrorCode)
+  code = property(getErrorCode)
+  status = property(getProcessStatus)

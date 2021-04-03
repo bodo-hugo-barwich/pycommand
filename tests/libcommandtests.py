@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 '''
 Tests to verify the Command Class Functionality
 
@@ -8,14 +9,11 @@ Tests to verify the Command Class Functionality
 import sys
 import os
 import unittest
-from libcommand.command import Command
 
 sys.path.append("../")
-sys.path.append("../libcommand")
 
-#from libcommand import *
+from libcommand.command import Command
 from libcommand import runCommand
-
 
 
 
@@ -74,7 +72,7 @@ class TestCommand(unittest.TestCase):
 
     cmdtest = Command("{}{} {}".format(self._sdirectory, self._stestscript, self._itestpause))
 
-    cmdtest.setDictOptions({'check': 2, 'profiling': 1})
+    cmdtest.setDictOptions({'check': 2, 'profiling': 1, 'debug': True})
 
     self.assertNotEqual(cmdtest.getReadTimeout(), -1, "Read Timeout is not set")
 #    self.assertEqual(cmdtest.isProfiling, True, 'Profiling is not enabled')
@@ -103,4 +101,19 @@ class TestCommand(unittest.TestCase):
       self.assertIsNotNone(scripterror, "STDERR was not captured")
 
     print("")
+
+
+
+if __name__ == "__main__":
+  print("test module: '{}'".format(__file__))
+
+  spath = os.path.abspath(__file__)
+
+  print("test module absolute path: '{}'".format(spath))
+
+  print("tests starting ...\n")
+  #import sys;sys.argv = ['', 'Test.testConstructor']
+  unittest.main()
+
+  print("tests done.\n")
 
