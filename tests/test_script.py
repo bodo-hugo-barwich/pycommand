@@ -28,7 +28,7 @@ print('Argument List: {}'.format(str(sys.argv)))
 
 
 smodule = '';
-spath =  os.path.abspath(__file__);
+spath = os.path.abspath(__file__);
 
 print("test script absolute path: '{}'".format(spath))
 

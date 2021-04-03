@@ -6,6 +6,10 @@ in asynchronous Mode and captures possible Errors.
 
 :author: Bodo Hugo Barwich
 '''
+from quodlibet.config import options
+from pyatspi.Accessibility import setTimeout
+from orca.scripts import self_voicing
+from distro import name
 __docformat__ = "restructuredtext en"
 
 import sys
@@ -30,13 +34,13 @@ class Command(object):
   #Constructors
 
 
-  def __init__(self, commandline = None):
+  def __init__(self, scommandline = None):
     '''
-    A `Command` Object can be instantiated with a `commandline`
-    `commmandline` is the executable plus the command line parameters passed to it
+    A `Command` Object can be instantiated with a `scommandline`
+    `scommandline` is the executable plus the command line parameters passed to it
 
-    :param commandline: The commmand to be executed in the child process
-    :type commandline: string
+    :param scommandline: The commmand to be executed in the child process
+    :type scommandline: string
     '''
 
     self._pid = -1
@@ -55,14 +59,83 @@ class Command(object):
     self._process_status = -1
     self._bdebug = False
 
-    if commandline is not None :
-      self._scommand = commandline
+    if scommandline is not None :
+      self._scommand = scommandline
 
 
 
 
   #-----------------------------------------------------------------------------------------
   #Administration Methods
+
+
+  def setDictOptions(self, options = {}):
+    if('name' in options):
+      #Set the Name
+      self._name = options['name']
+
+    if('check' in options):
+      self.setReadTimeout(options['check'])
+
+    if('read' in options):
+      self.setReadTimeout(options['read'])
+
+    if('readtimeout' in options):
+      self.setReadTimeout(options['readtimeout'])
+
+    if('timeout' in options):
+      self.setTimeout(options['timeout'])
+
+    if('debug' in options):
+      self.setDebug(options['debug'])
+
+    #Attributes that cannot be changed in Running State
+    if(not self.isRunning()):
+      if('command' in options):
+        self.setCommand(options['command'])
+
+#      if('profiling' in options):
+#        self.setProfiling(options['profiling'])
+
+    #if(not self.isRunning())
+
+
+  def setName(self, sname = ''):
+    self._name = sname
+
+
+  def setCommand(self, scommandline = ''):
+    #Attributes that cannot be changed in Running State
+    if(not self.isRunning()):
+      self._scommand = scommandline
+
+      self._process = None
+      self._pid = -1
+      self._process_status = -1
+
+    #unless($self->isRunning)
+
+
+
+  def setReadTimeout(self, ireadtimeout = 1):
+    if(ireadtimeout > -1):
+      #Enable the Read Timeout
+      self._read_timeout = ireadtimeout
+    else:
+      #Disable the Read Timeout
+      self._read_timeout  = 0
+
+
+  def setTimeout(self, iexecutiontimeout = -1):
+    self._execution_timeout = iexecutiontimeout
+
+    if(self._execution_timeout < -1):
+      #Disable Execution Timeout
+      self._execution_timeout = -1
+
+
+  def setDebug(self, bisdebug = True):
+    self._bdebug = bisdebug
 
 
   def Launch(self):
@@ -175,6 +248,11 @@ class Command(object):
     :see: `Command.getReportString()`
     :see: `Command.getErrorString()`
     '''
+    if(self._sreport is not None):
+      self._sreport = None
+
+    if(self._serror is not None):
+      self._serror = None
 
     if self._process is not None :
       if self._bdebug :
@@ -185,7 +263,7 @@ class Command(object):
       brd = True
 
       for key in events:
-        if key.fileobj == self._process.stdout :
+        if key[0].fileobj == self._process.stdout :
           scnk = self._process.stdout.read(self._package_size)
 
           if self._bdebug :
@@ -207,7 +285,7 @@ class Command(object):
 
             self._selector.unregister(self._process.stdout)
 
-        elif key.fileobj == self._process.stderr :
+        elif key[0].fileobj == self._process.stderr :
           scnk = self._process.stderr.read(self._package_size)
 
           if self._bdebug :
@@ -385,8 +463,16 @@ class Command(object):
     return rsnm
 
 
+  def getCommand(self):
+    return self._scommand
+
+
   def getReadTimeout(self):
     return self._read_timeout
+
+
+  def getTimeout(self):
+    return self._execution_timeout
 
 
   def isRunning(self):
@@ -420,3 +506,17 @@ class Command(object):
   def isDebug(self):
     return self._bdebug
 
+
+
+  #-----------------------------------------------------------------------------------------
+  #Properties
+
+
+  name = property(getName, setName)
+  command_line = property(getCommand, setCommand)
+  read_timeout = property(getReadTimeout, setReadTimeout)
+  timeout = property(getTimeout, setTimeout)
+  debug = property(isDebug, setDebug)
+  report = property(getReportString)
+  error = property(getErrorString)
+  status = property(getErrorCode)
