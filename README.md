@@ -45,7 +45,7 @@ Demonstrating the `runCommand()` Function Use Case:
 	    print("setUp - Test Directory: '{}'".format(os.getcwd()))
 	    print("setUp - Test Module: '{}'".format(__file__))
 
-	   self._sdirectory = os.getcwd() + '/'
+	    self._sdirectory = os.getcwd() + '/'
 
 	   spath = os.path.abspath(__file__);
 
