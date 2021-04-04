@@ -23,8 +23,8 @@ As I developed it as Prototype at:
 The **Object Oriented Design** permits the implementation of the **[Command Pattern / Manager-Worker Pattern](https://en.wikipedia.org/wiki/Command_pattern)**.\
 Providing a similar functionality as the [`subprocess.run` Function](https://docs.python.org/3/library/subprocess.html#subprocess.run) it can serve as a Procedural Replacement for this function without the need of special treatment for possible errors with Exceptions.
 
-# Usage
-## runCommand() Function
+## Usage
+### runCommand() Function
 Demonstrating the `runCommand()` Function Use Case:
 ```python
 
@@ -75,4 +75,29 @@ Demonstrating the `runCommand()` Function Use Case:
 	   print("STDERR: '{}'".format(arrrs[1]));
 
 	   print("")
+```
+
+The Output shows how STDOUT, STDERR and EXIT Code are cleanly seperated.\
+This will produce the Output:
+```text
+setUp - go ...
+setUp - Test Directory: '/path/to/pycommand/tests'
+setUp - Test Module: './commandtests.py'
+
+test_RunCommand - go ...
+EXIT CODE: '4'
+STDOUT: 'Start - Time Now: '1617575015.5021873'
+Number of arguments: 3 arguments.
+Argument List: ['/path/to/pycommand/tests/test_script.py', '3', '4']
+test script absolute path: '/path/to/pycommand/tests/test_script.py'
+script 'test_script.py' START 0
+script 'test_script.py' PAUSE '3' ...
+script 'test_script.py' END 1
+End - Time Now: '1617575018.503503'
+script 'test_script.py' done in '3001.3158321380615' ms
+script 'test_script.py' EXIT '4'
+'
+STDERR: 'script 'test_script.py' START 0 ERROR
+script 'test_script.py' END 1 ERROR
+'
 ```

@@ -1,5 +1,5 @@
 '''
-Definition of the libcommand Package
+Definition of the `libcommand` Package
 
 @version: 2021-04-03
 
