@@ -12,17 +12,21 @@ from libcommand.command import Command
 
 
 
-def runCommand(scommandline = ''):
+def runCommand(scommandline = '', options = {}):
   '''
   This Method launches a process defined by `scommandline` in a separate child process
 
+  :param scommandline: The commmand and its parameters to be executed in the child process
+  :type scommandline: string
+  :param options: Additional options for the execution as key - value pairs
+  :type options: dictionary
   :returns: Returns a Tuple with the STDOUT, STDERR and EXIT Code
   :rtype: tuple
   '''
 
   arrrs = ['', '', 0]
 
-  cmd = Command(scommandline)
+  cmd = Command(scommandline, options)
 
   if(cmd.Launch()):
     cmd.Wait()
@@ -35,6 +39,7 @@ def runCommand(scommandline = ''):
     arrrs[2] = cmd.getErrorCode()
 
   cmd.freeResources()
+  cmd = None
 
   return arrrs
 

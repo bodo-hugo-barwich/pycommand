@@ -9,6 +9,8 @@ Tests to verify the Command Class Functionality
 import sys
 import os
 import unittest
+import re
+from re import IGNORECASE
 
 sys.path.append("../")
 
@@ -29,7 +31,7 @@ class TestCommand(unittest.TestCase):
   def setUp(self):
     print("{} - go ...".format(sys._getframe().f_code.co_name))
     print("setUp - Test Directory: '{}'".format(os.getcwd()))
-    print("setUp - Test Module: '{}'\n".format(__file__))
+    print("setUp - Test Module: '{}'".format(__file__))
 
     self._sdirectory = os.getcwd() + '/'
 
@@ -42,8 +44,6 @@ class TestCommand(unittest.TestCase):
     else :
       self._smodule = spath
 
-    print("")
-
 
   def tearDown(self):
     pass
@@ -51,6 +51,8 @@ class TestCommand(unittest.TestCase):
 
   def test_RunCommand(self):
     print("{} - go ...".format(sys._getframe().f_code.co_name))
+
+    self._itestpause = 3
 
     arrrs = runCommand("{}{} {} {}".format(self._sdirectory, self._stestscript, self._itestpause, self._iteststatus))
 
@@ -70,23 +72,26 @@ class TestCommand(unittest.TestCase):
   def test_ReadTimeout(self):
     print("{} - go ...".format(sys._getframe().f_code.co_name))
 
+    self._itestpause = 3
+
     cmdtest = Command("{}{} {}".format(self._sdirectory, self._stestscript, self._itestpause))
 
     cmdtest.setDictOptions({'check': 2, 'profiling': 1, 'debug': True})
 
     self.assertNotEqual(cmdtest.getReadTimeout(), -1, "Read Timeout is not set")
-#    self.assertEqual(cmdtest.isProfiling, True, 'Profiling is not enabled')
+    self.assertTrue(cmdtest.isProfiling, 'Profiling is not enabled')
 
-    self.assertEqual(cmdtest.Launch(), True, "script '{}': Launch failed!".format(self._stestscript))
-    self.assertEqual(cmdtest.Wait(), True, "script '{}': Execution failed!".format(self._stestscript))
+    self.assertTrue(cmdtest.Launch(), "script '{}': Launch failed!".format(self._stestscript))
+    self.assertTrue(cmdtest.Wait(), "script '{}': Execution failed!".format(self._stestscript))
 
     scriptlog = cmdtest.report
     scripterror = cmdtest.error
     iscriptstatus = cmdtest.status
 
-    #ok($proctest->getExecutionTime < $proctest->getReadTimeout * 2, "Measured Time is smaller than the Read Timeout");
+    print("Execution Time: '{}'".format(cmdtest.execution_time));
 
-    #print("Execution Time: '", $proctest->getExecutionTime, "'\n");
+    self.assertTrue(cmdtest.getExecutionTime() < cmdtest.getReadTimeout() * 2\
+    , "Measured Time is greater or equal than the Read Timeout");
 
     print("EXIT CODE: '{}'".format(iscriptstatus))
 
@@ -99,6 +104,48 @@ class TestCommand(unittest.TestCase):
       print("STDERR: '{}'".format(scripterror))
     else:
       self.assertIsNotNone(scripterror, "STDERR was not captured")
+
+    print("")
+
+
+  def test_ExecutionTimeout(self):
+    print("{} - go ...".format(sys._getframe().f_code.co_name))
+
+    self._itestpause = 4
+
+    cmdtest = Command("{}{} {}".format(self._sdirectory, self._stestscript, self._itestpause)\
+      , {'timeout': (self._itestpause - 2)})
+
+    self.assertNotEqual(cmdtest.getTimeout(), -1, "Execution Timeout is not set")
+
+    self.assertTrue(cmdtest.Launch(), "script '{}': Launch failed!".format(self._stestscript))
+    self.assertFalse(cmdtest.Wait(), "script '{}': Execution did not fail".format(self._stestscript))
+
+    scriptlog = cmdtest.report
+    scripterror = cmdtest.error
+    iscriptstatus = cmdtest.status
+
+    print("ERROR CODE: '{}'".format(cmdtest.code))
+    print("EXIT CODE: '{}'".format(iscriptstatus))
+
+    self.assertEqual(cmdtest.code, 4, "ERROR CODE '4' was not returned")
+    self.assertTrue(iscriptstatus < 1, "EXIT CODE is not correct")
+
+    self.assertIsNotNone(scriptlog, "STDOUT was not captured")
+
+    if scriptlog is not None :
+      print("STDOUT: '{}'".format(scriptlog))
+
+    self.assertIsNotNone(scripterror, "STDERR was not captured")
+
+    if scripterror is not None :
+      print("STDERR: '{}'".format(scripterror))
+
+      err_pat = re.compile('Execution timed out', re.IGNORECASE)
+
+      self.assertIsNotNone(err_pat.search(scripterror), "STDERR does not report Execution Timeout");
+
+    #if(defined $rscripterror)
 
     print("")
 

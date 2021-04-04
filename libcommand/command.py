@@ -30,13 +30,15 @@ class Command(object):
   #Constructors
 
 
-  def __init__(self, scommandline = None):
+  def __init__(self, scommandline = None, options = {}):
     '''
     A `Command` Object can be instantiated with a `scommandline`
     `scommandline` is the executable plus the command line parameters passed to it
 
-    :param scommandline: The commmand to be executed in the child process
+    :param scommandline: The commmand and its parameters to be executed in the child process
     :type scommandline: string
+    :param options: Additional options for the execution as key - value pairs
+    :type options: dictionary
     '''
 
     self._pid = -1
@@ -53,10 +55,17 @@ class Command(object):
     self._serror = None
     self._err_code = 0
     self._process_status = -1
+    self._time_execution = -1
+    self._time_start = -1
+    self._time_end = -1
+    self._bprofiling = False
     self._bdebug = False
 
     if scommandline is not None :
       self._scommand = scommandline
+
+    if len(options) > 0 :
+      self.setDictOptions(options)
 
 
 
@@ -90,8 +99,8 @@ class Command(object):
       if('command' in options):
         self.setCommand(options['command'])
 
-#      if('profiling' in options):
-#        self.setProfiling(options['profiling'])
+      if('profiling' in options):
+        self.setProfiling(options['profiling'])
 
     #if(not self.isRunning())
 
@@ -130,6 +139,10 @@ class Command(object):
       self._execution_timeout = -1
 
 
+  def setProfiling(self, bisprofiling = True):
+    self._bprofiling = bisprofiling
+
+
   def setDebug(self, bisdebug = True):
     self._bdebug = bisdebug
 
@@ -153,10 +166,16 @@ class Command(object):
       arrcmd = split(self._scommand)
 
       if self._bdebug :
-        self._arr_rpt.append("cmd: '{}'".format(self._scommand))
+        self._arr_rpt.append("cmd arr: '{}'".format(str(arrcmd)))
 
       self._pid = -1
       self._process_status = -1
+
+      if self._bdebug :
+        self._arr_rpt.append("cmd pfg '{}'".format(self._bprofiling))
+
+      if self._bprofiling :
+        self._time_start = time.time()
 
       try :
         #Launch the Child Process
@@ -213,6 +232,16 @@ class Command(object):
 
         if self._bdebug :
           self._arr_rpt.append("prc ({}): done.".format(self._pid))
+
+        if self._bprofiling :
+          self._time_end = time.time()
+
+          self._time_execution = self._time_end - self._time_start
+
+          if self._bdebug :
+            self._arr_rpt.append("Time Execution: '{}' s".format(self._time_execution))
+
+        #if(self._bprofiling)
 
         #Read the Last Messages from the Sub Process
         self.Read()
@@ -341,12 +370,12 @@ class Command(object):
           itmrng = itmrngend - itmrngstrt
 
           if(self._bdebug):
-            self._arr_rpt.append("wait tm rng: '{}'\n".format(itmrng))
+            self._arr_rpt.append("wait tm rng: '{}'".format(itmrng))
 
           if(itmrng >= self._execution_timeout):
-            self._arr_err.append("Sub Process {}: Execution timed out!\n".format(sprcnm))
-            self._arr_err.append("Execution Time '{} / {}'\n".format(itmrng, self._execution_timeout))
-            self._arr_err.append("Process will be terminated.\n")
+            self._arr_err.append("Sub Process {}: Execution timed out!".format(sprcnm))
+            self._arr_err.append("Execution Time '{} / {}'".format(itmrng, self._execution_timeout))
+            self._arr_err.append("Process will be terminated.")
 
             if(self._err_code < 4):
               self._err_code = 4
@@ -506,6 +535,14 @@ class Command(object):
     return self._process_status
 
 
+  def getExecutionTime(self):
+    return self._time_execution
+
+
+  def isProfiling(self):
+    return self._bprofiling
+
+
   def isDebug(self):
     return self._bdebug
 
@@ -519,6 +556,8 @@ class Command(object):
   command_line = property(getCommand, setCommand)
   read_timeout = property(getReadTimeout, setReadTimeout)
   timeout = property(getTimeout, setTimeout)
+  execution_time = property(getExecutionTime)
+  profiling = property(isProfiling, setProfiling)
   debug = property(isDebug, setDebug)
   report = property(getReportString)
   error = property(getErrorString)
