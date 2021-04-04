@@ -141,9 +141,9 @@ class TestCommand(unittest.TestCase):
     if scripterror is not None :
       print("STDERR: '{}'".format(scripterror))
 
-      err_pat = re.compile('Execution timed out', re.IGNORECASE)
+      pat_tmout = re.compile('Execution timed out', re.IGNORECASE)
 
-      self.assertIsNotNone(err_pat.search(scripterror), "STDERR does not report Execution Timeout");
+      self.assertIsNotNone(pat_tmout.search(scripterror), "STDERR does not report Execution Timeout");
 
     #if(defined $rscripterror)
 
