@@ -14,7 +14,7 @@ from re import IGNORECASE
 
 sys.path.append("../")
 
-from libcommand.command import Command
+from libcommand import Command
 from libcommand import runCommand
 
 
@@ -43,6 +43,8 @@ class TestCommand(unittest.TestCase):
       self._smodule = spath[slashpos + 1 : len(spath)]
     else :
       self._smodule = spath
+
+    print("")
 
 
   def tearDown(self):

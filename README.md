@@ -60,7 +60,7 @@ Demonstrating the `runCommand()` Function Use Case:
 	 def test_RunCommand(self):
 	   print("{} - go ...".format(sys._getframe().f_code.co_name))
 
-		self._itestpause = 3
+	   self._itestpause = 3
 
 	   arrrs = runCommand("{}{} {} {}".format(self._sdirectory, self._stestscript, self._itestpause, self._iteststatus))
 
