@@ -200,7 +200,7 @@ class Command(object):
         self._arr_err.append("Command '{}': Launch failed!".format(sprcnm))
         self._arr_err.append("Message: {}".format(str(e)))
         self._err_code = 1
-        self._pid = -1
+        self._process_status = e.errno
         self._process = None
 
     #if self._scommand != ''

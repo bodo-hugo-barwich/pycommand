@@ -54,6 +54,7 @@ class TestCommand(unittest.TestCase):
   def test_RunCommand(self):
     print("{} - go ...".format(sys._getframe().f_code.co_name))
 
+    self._stestscript = 'test_script.py'
     self._itestpause = 3
 
     arrrs = runCommand("{}{} {} {}".format(self._sdirectory, self._stestscript, self._itestpause, self._iteststatus))
@@ -74,6 +75,7 @@ class TestCommand(unittest.TestCase):
   def test_ReadTimeout(self):
     print("{} - go ...".format(sys._getframe().f_code.co_name))
 
+    self._stestscript = 'test_script.py'
     self._itestpause = 3
 
     cmdtest = Command("{}{} {}".format(self._sdirectory, self._stestscript, self._itestpause))
@@ -113,6 +115,7 @@ class TestCommand(unittest.TestCase):
   def test_ExecutionTimeout(self):
     print("{} - go ...".format(sys._getframe().f_code.co_name))
 
+    self._stestscript = 'test_script.py'
     self._itestpause = 4
 
     cmdtest = Command("{}{} {}".format(self._sdirectory, self._stestscript, self._itestpause)\
@@ -147,7 +150,54 @@ class TestCommand(unittest.TestCase):
 
       self.assertIsNotNone(pat_tmout.search(scripterror), "STDERR does not report Execution Timeout");
 
-    #if(defined $rscripterror)
+    #if scripterror is not None
+
+    print("")
+
+
+  def test_ScriptNotFound(self):
+    print("{} - go ...".format(sys._getframe().f_code.co_name))
+
+    self._stestscript = 'no_script.sh'
+
+    cmdtest = Command(self._sdirectory + self._stestscript)
+
+    brunok = cmdtest.Launch() and cmdtest.Wait()
+
+    scriptlog = cmdtest.report
+    scripterror = cmdtest.error
+    iscriptstatus = cmdtest.status
+
+    print("ERROR CODE: '{}'".format(cmdtest.code))
+    print("EXIT CODE: '{}'".format(iscriptstatus))
+
+    if iscriptstatus == -1 :
+      self.assertFalse(brunok, "script '{}': Execution did not fail".format(self._stestscript))
+    else :
+      self.assertFalse(brunok, "script '{}': Execution did not fail".format(self._stestscript))
+
+    self.assertEqual(cmdtest.code, 1, "ERROR CODE '1' was not returned")
+
+    if iscriptstatus == 255 :
+      self.assertEqual(iscriptstatus, 255, "EXIT CODE '255' was not returned")
+    else :
+      self.assertEqual(iscriptstatus, 2, "EXIT CODE '2' was not returned")
+
+    self.assertIsNotNone(scriptlog, "STDOUT was not captured")
+
+    if scriptlog is not None :
+      print("STDOUT: '{}'".format(scriptlog))
+
+    self.assertIsNotNone(scripterror, "STDERR was not captured")
+
+    if scripterror is not None :
+      print("STDERR: '{}'".format(scripterror))
+
+      pat_ntfnd = re.compile('no such file', re.IGNORECASE)
+
+      self.assertIsNotNone(pat_ntfnd.search(scripterror), "STDERR does not report Not Found Error");
+
+    #if scripterror is not None
 
     print("")
 
