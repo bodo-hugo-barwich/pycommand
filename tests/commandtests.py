@@ -202,6 +202,54 @@ class TestCommand(unittest.TestCase):
     print("")
 
 
+  def test_NoPermission(self):
+    print("{} - go ...".format(sys._getframe().f_code.co_name))
+
+    self._stestscript = 'noexec_script.py'
+
+    cmdtest = Command(self._sdirectory + self._stestscript)
+
+    brunok = cmdtest.Launch() and cmdtest.Wait()
+
+    scriptlog = cmdtest.report
+    scripterror = cmdtest.error
+    iscriptstatus = cmdtest.status
+
+    print("ERROR CODE: '{}'".format(cmdtest.code))
+    print("EXIT CODE: '{}'".format(iscriptstatus))
+
+    if iscriptstatus == -1 :
+      self.assertFalse(brunok, "script '{}': Execution did not fail".format(self._stestscript))
+    else :
+      self.assertFalse(brunok, "script '{}': Execution did not fail".format(self._stestscript))
+
+    self.assertEqual(cmdtest.code, 1, "ERROR CODE '1' was not returned")
+
+    if iscriptstatus == 255 :
+      self.assertEqual(iscriptstatus, 255, "EXIT CODE '255' was not returned")
+    else :
+      self.assertEqual(iscriptstatus, 13, "EXIT CODE '13' was not returned")
+
+    self.assertIsNotNone(scriptlog, "STDOUT was not captured")
+
+    if scriptlog is not None :
+      print("STDOUT: '{}'".format(scriptlog))
+
+    self.assertIsNotNone(scripterror, "STDERR was not captured")
+
+    if scripterror is not None :
+      print("STDERR: '{}'".format(scripterror))
+
+      pat_noperm = re.compile('permission denied', re.IGNORECASE)
+
+      self.assertIsNotNone(pat_noperm.search(scripterror), "STDERR does not report No Permission Error");
+
+    #if scripterror is not None
+
+    print("")
+
+
+
 
 if __name__ == "__main__":
   print("test module: '{}'".format(__file__))
