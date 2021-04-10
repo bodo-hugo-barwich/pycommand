@@ -197,7 +197,7 @@ class Command(object):
           .format(sprcnm, self._pid))
 
       except Exception as e :
-        self._arr_err.append("Command '{}': Launch failed with {} Exception!".format(sprcnm, e.__class__.__name__))
+        self._arr_err.append("Command '{}': Launch failed with {}!".format(sprcnm, e.__class__.__name__))
         self._arr_err.append("Exception [{}] Message: {}".format(e.errno, str(e)))
         self._err_code = 1
         self._process_status = e.errno

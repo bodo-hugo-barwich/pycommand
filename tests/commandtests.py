@@ -249,6 +249,43 @@ class TestCommand(unittest.TestCase):
     print("")
 
 
+  def test_BashError(self):
+    print("{} - go ...".format(sys._getframe().f_code.co_name))
+
+    self._stestscript = 'nobashbang_script.py'
+
+    cmdtest = Command(self._sdirectory + self._stestscript)
+
+    brunok = cmdtest.Launch() and cmdtest.Wait()
+
+    scriptlog = cmdtest.report
+    scripterror = cmdtest.error
+    iscriptstatus = cmdtest.status
+
+    print("ERROR CODE: '{}'".format(cmdtest.code))
+    print("EXIT CODE: '{}'".format(iscriptstatus))
+
+    self.assertEqual(cmdtest.code, 1, "ERROR CODE '1' was not returned")
+    self.assertEqual(iscriptstatus, 8, "EXIT CODE '8' was not returned")
+    self.assertFalse(brunok, "script '{}': Execution did not fail".format(self._stestscript))
+
+    self.assertIsNotNone(scriptlog, "STDOUT was not captured")
+
+    if scriptlog is not None :
+      print("STDOUT: '{}'".format(scriptlog))
+
+    self.assertIsNotNone(scripterror, "STDERR was not captured")
+
+    if scripterror is not None :
+      print("STDERR: '{}'".format(scripterror))
+
+      pat_synerr = re.compile('exec format error', re.IGNORECASE)
+
+      self.assertIsNotNone(pat_synerr.search(scripterror), "STDERR does not report Bash Error");
+
+    #if scripterror is not None
+
+    print('')
 
 
 if __name__ == "__main__":
