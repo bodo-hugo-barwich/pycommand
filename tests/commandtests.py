@@ -140,7 +140,7 @@ class TestCommand(unittest.TestCase):
       self.assertEqual(iscriptstatus, -15, "EXIT CODE is not correct")
     else :
       #Script informs Termination Signal
-      self.assertNotEqual(iscriptstatus, 0, "EXIT CODE is not correct")
+      self.assertTrue(iscriptstatus <= 4, "EXIT CODE is not correct")
 
     self.assertIsNotNone(scriptlog, "STDOUT was not captured")
 
