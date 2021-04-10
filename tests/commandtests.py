@@ -119,7 +119,7 @@ class TestCommand(unittest.TestCase):
     self._itestpause = 30
 
     cmdtest = Command("{}{} {}".format(self._sdirectory, self._stestscript, self._itestpause)\
-      , {'timeout': (5), 'check': 1, 'profiling': True, 'debug': True})
+      , {'timeout': 5, 'check': 1, 'profiling': True})
 
     self.assertNotEqual(cmdtest.getTimeout(), -1, "Execution Timeout is not set")
 

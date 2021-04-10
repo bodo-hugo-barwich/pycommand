@@ -73,17 +73,10 @@ class Command(object):
     On Destruction any still running Child Processes are killed
     and the Lists of str Objects will be freed
     '''
-    #if self._bdebug :
-    #  print("'{}' : Signal to '{}'"\
-    #  .format(sys._getframe(1).f_code.co_name, sys._getframe(0).f_code.co_name))
-
     self.freeResources()
 
     self._arr_rpt = None
     self._arr_err = None
-
-    #if self._bdebug :
-    #  print("'{}' : done.".format(sys._getframe(0).f_code.co_name))
 
 
 
