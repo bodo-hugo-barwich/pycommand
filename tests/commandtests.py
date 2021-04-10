@@ -80,7 +80,7 @@ class TestCommand(unittest.TestCase):
 
     cmdtest = Command("{}{} {}".format(self._sdirectory, self._stestscript, self._itestpause))
 
-    cmdtest.setDictOptions({'check': 2, 'profiling': True, 'debug': True})
+    cmdtest.setDictOptions({'check': 2, 'profiling': True})
 
     self.assertNotEqual(cmdtest.getReadTimeout(), -1, "Read Timeout is not set")
     self.assertTrue(cmdtest.isProfiling, 'Profiling is not enabled')
@@ -134,7 +134,13 @@ class TestCommand(unittest.TestCase):
     print("EXIT CODE: '{}'".format(iscriptstatus))
 
     self.assertEqual(cmdtest.code, 4, "ERROR CODE '4' was not returned")
-    self.assertTrue(iscriptstatus <= 4, "EXIT CODE is not correct")
+
+    if iscriptstatus == -15 :
+      #Script informs Termination Signal
+      self.assertEqual(iscriptstatus, -15, "EXIT CODE is not correct")
+    else :
+      #Script informs Termination Signal
+      self.assertNotEqual(iscriptstatus, 0, "EXIT CODE is not correct")
 
     self.assertIsNotNone(scriptlog, "STDOUT was not captured")
 

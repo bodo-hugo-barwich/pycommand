@@ -39,7 +39,7 @@ if slashpos != -1 :
 else :
   smodule = spath
 
-print("script '{}' START 0 ERROR".format(smodule), file = sys.stderr)
+print("script '{}' START 0 ERROR".format(smodule), file = sys.stderr, flush=True)
 
 
 if(len(sys.argv) > 1):
@@ -80,7 +80,7 @@ if(ierr < 0):
 
 print("script '{}' START 0".format(smodule))
 
-print("script '{}' PAUSE '{}' ...".format(smodule, ipause))
+print("script '{}' PAUSE '{}' ...".format(smodule, ipause), flush=True)
 
 time.sleep(ipause)
 
