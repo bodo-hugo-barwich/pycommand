@@ -6,3 +6,6 @@
 */__pycache__/*
 */os
 */unittest
+
+#Exclude Test Log Files
+*.log

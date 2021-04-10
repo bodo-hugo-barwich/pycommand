@@ -68,6 +68,23 @@ class Command(object):
       self.setDictOptions(options)
 
 
+  def __del__(self):
+    '''
+    On Destruction any still running Child Processes are killed
+    and the Lists of str Objects will be freed
+    '''
+    #if self._bdebug :
+    #  print("'{}' : Signal to '{}'"\
+    #  .format(sys._getframe(1).f_code.co_name, sys._getframe(0).f_code.co_name))
+
+    self.freeResources()
+
+    self._arr_rpt = None
+    self._arr_err = None
+
+    #if self._bdebug :
+    #  print("'{}' : done.".format(sys._getframe(0).f_code.co_name))
+
 
 
   #-----------------------------------------------------------------------------------------
@@ -369,10 +386,10 @@ class Command(object):
 
           itmrng = itmrngend - itmrngstrt
 
-          if(self._bdebug):
+          if self._bdebug :
             self._arr_rpt.append("wait tm rng: '{}'".format(itmrng))
 
-          if(itmrng >= self._execution_timeout):
+          if itmrng >= self._execution_timeout :
             self._arr_err.append("Sub Process {}: Execution timed out!".format(sprcnm))
             self._arr_err.append("Execution Time '{} / {}'".format(itmrng, self._execution_timeout))
             self._arr_err.append("Process will be terminated.")
@@ -382,6 +399,12 @@ class Command(object):
 
             #Terminate the Timed Out Sub Process
             self.Terminate()
+
+            #Try to reap the Sub Process again
+            if self.Check() :
+              #Kill the blocked Sub Process
+              self.Kill()
+
             #Mark the Sub Process as finished with Error
             irng = -1
 
@@ -402,7 +425,7 @@ class Command(object):
     sprcnm = self.getNameComplete()
 
     if self._bdebug :
-      self._arr_err.append("'{}' : Signal to '{}'"\
+      self._arr_rpt.append("'{}' : Signal to '{}'"\
       .format(sys._getframe(1).f_code.co_name, sys._getframe(0).f_code.co_name))
 
     if self.isRunning():
@@ -420,11 +443,12 @@ class Command(object):
     sprcnm = self.getNameComplete()
 
     if self._bdebug :
-      self._arr_err.append("'{}' : Signal to '{}'"\
+      self._arr_rpt.append("'{}' : Signal to '{}'"\
       .format(sys._getframe(1).f_code.co_name, sys._getframe(0).f_code.co_name))
 
     if self.isRunning() :
       self._arr_err.append("Sub Process {}: Process killing ...".format(sprcnm))
+      print("Sub Process {}: Process killing ...".format(sprcnm))
 
       if self._process is not None :
         self._process.kill()
@@ -450,8 +474,9 @@ class Command(object):
 
     #Resource can only be freed if the Sub Process has terminated
     if not self.isRunning() :
-      self._selector.close()
-      self._selector = None
+      if self._selector is not None :
+        self._selector.close()
+        self._selector = None
 
 
 
@@ -507,7 +532,7 @@ class Command(object):
     brng = False
 
     #The Process got a Process ID but did not get a Process Status Code yet
-    if self._pid > 0 and self._process_status < 0 :
+    if self._pid > 0 and self._process_status == -1 :
       brng = True
 
     return brng

@@ -80,7 +80,7 @@ class TestCommand(unittest.TestCase):
 
     cmdtest = Command("{}{} {}".format(self._sdirectory, self._stestscript, self._itestpause))
 
-    cmdtest.setDictOptions({'check': 2, 'profiling': 1, 'debug': True})
+    cmdtest.setDictOptions({'check': 2, 'profiling': True, 'debug': True})
 
     self.assertNotEqual(cmdtest.getReadTimeout(), -1, "Read Timeout is not set")
     self.assertTrue(cmdtest.isProfiling, 'Profiling is not enabled')
@@ -116,10 +116,10 @@ class TestCommand(unittest.TestCase):
     print("{} - go ...".format(sys._getframe().f_code.co_name))
 
     self._stestscript = 'test_script.py'
-    self._itestpause = 4
+    self._itestpause = 30
 
     cmdtest = Command("{}{} {}".format(self._sdirectory, self._stestscript, self._itestpause)\
-      , {'timeout': (self._itestpause - 2)})
+      , {'timeout': (5), 'check': 1, 'profiling': True, 'debug': True})
 
     self.assertNotEqual(cmdtest.getTimeout(), -1, "Execution Timeout is not set")
 
@@ -134,7 +134,7 @@ class TestCommand(unittest.TestCase):
     print("EXIT CODE: '{}'".format(iscriptstatus))
 
     self.assertEqual(cmdtest.code, 4, "ERROR CODE '4' was not returned")
-    self.assertTrue(iscriptstatus < 1, "EXIT CODE is not correct")
+    self.assertTrue(iscriptstatus <= 4, "EXIT CODE is not correct")
 
     self.assertIsNotNone(scriptlog, "STDOUT was not captured")
 
@@ -304,9 +304,9 @@ class TestCommand(unittest.TestCase):
     print("ERROR CODE: '{}'".format(cmdtest.code))
     print("EXIT CODE: '{}'".format(iscriptstatus))
 
-    self.assertEqual(cmdtest.code, 1, "ERROR CODE '1' was not returned")
-    self.assertEqual(iscriptstatus, 8, "EXIT CODE '8' was not returned")
-    self.assertFalse(brunok, "script '{}': Execution did not fail".format(self._stestscript))
+    self.assertEqual(cmdtest.code, 0, "ERROR CODE '0' was not returned")
+    self.assertEqual(iscriptstatus, 1, "EXIT CODE '1' was not returned")
+    self.assertTrue(brunok, "script '{}': Execution did fail".format(self._stestscript))
 
     self.assertIsNotNone(scriptlog, "STDOUT was not captured")
 
