@@ -2,7 +2,7 @@
 This Module provides the `Command` Class which launches a Single Child Process
 in asynchronous Mode and captures possible Errors.
 
-:version: 2021-04-03
+:version: 2021-04-10
 
 :author: Bodo Hugo Barwich
 '''

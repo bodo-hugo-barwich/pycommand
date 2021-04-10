@@ -9,4 +9,4 @@ If the Syntax Error is not recognized it will raise a Python Exception
 :author: Bodo Hugo Barwich
 '''
 
-raise Exception('Script fails with Exception')
+raise Exception('Script fails with Exception!')

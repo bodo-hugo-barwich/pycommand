@@ -2,7 +2,7 @@
 '''
 Tests to verify the Command Class Functionality
 
-@version: 2021-04-03
+@version: 2021-04-10
 
 @author: Bodo Hugo Barwich
 '''
@@ -286,6 +286,46 @@ class TestCommand(unittest.TestCase):
     #if scripterror is not None
 
     print('')
+
+
+  def test_PythonException(self):
+    print("{} - go ...".format(sys._getframe().f_code.co_name))
+
+    self._stestscript = 'exception_script.py'
+
+    cmdtest = Command(self._sdirectory + self._stestscript)
+
+    brunok = cmdtest.Launch() and cmdtest.Wait()
+
+    scriptlog = cmdtest.report
+    scripterror = cmdtest.error
+    iscriptstatus = cmdtest.status
+
+    print("ERROR CODE: '{}'".format(cmdtest.code))
+    print("EXIT CODE: '{}'".format(iscriptstatus))
+
+    self.assertEqual(cmdtest.code, 1, "ERROR CODE '1' was not returned")
+    self.assertEqual(iscriptstatus, 8, "EXIT CODE '8' was not returned")
+    self.assertFalse(brunok, "script '{}': Execution did not fail".format(self._stestscript))
+
+    self.assertIsNotNone(scriptlog, "STDOUT was not captured")
+
+    if scriptlog is not None :
+      print("STDOUT: '{}'".format(scriptlog))
+
+    self.assertIsNotNone(scripterror, "STDERR was not captured")
+
+    if scripterror is not None :
+      print("STDERR: '{}'".format(scripterror))
+
+      pat_except = re.compile('python exception', re.IGNORECASE)
+
+      self.assertIsNotNone(pat_except.search(scripterror), "STDERR does not report the Python Exeception");
+
+    #if scripterror is not None
+
+    print('')
+
 
 
 if __name__ == "__main__":
