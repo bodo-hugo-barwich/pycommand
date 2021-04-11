@@ -6,6 +6,7 @@ in asynchronous Mode and captures possible Errors.
 
 :author: Bodo Hugo Barwich
 '''
+from texttable import len
 __docformat__ = "restructuredtext en"
 
 import sys
@@ -189,7 +190,7 @@ class Command(object):
 
       try :
         #Launch the Child Process
-        self._process = subprocess.Popen(arrcmd, stdin = None\
+        self._process = subprocess.Popen(arrcmd, bufsize = self._package_size, stdin = None\
         , stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
         self._pid = self._process.pid
@@ -205,6 +206,8 @@ class Command(object):
         if self._bdebug :
           self._arr_rpt.append("Sub Process {}: Launch OK - PID ({})"\
           .format(sprcnm, self._pid))
+          self._arr_rpt.append("prc ({}) - stdout: '{}'".format(self._pid, str(self._process.stdout)))
+          self._arr_rpt.append("prc ({}) - stderr: '{}'".format(self._pid, str(self._process.stderr)))
 
       except Exception as e :
         self._arr_err.append("Command '{}': Launch failed with {}!".format(sprcnm, e.__class__.__name__))
@@ -235,13 +238,13 @@ class Command(object):
     if self._process is not None :
       if self._process.poll() is not None :
         #------------------------
-        #A Child Process has finished
+        #Child Process has finished
 
         #Read the Process Status Code
         self._process_status = self._process.returncode
 
         if self._bdebug :
-          self._arr_rpt.append("prc ({}): done.".format(self._pid))
+          self._arr_rpt.append("prc ({}): finished with [{}].".format(self._pid, self._process_status))
 
         if self._bprofiling :
           self._time_end = time.time()
@@ -253,6 +256,9 @@ class Command(object):
 
         #if(self._bprofiling)
 
+        if self._bdebug :
+          self._arr_rpt.append("prc ({}) [{}]: Read do ...".format(self._pid, self._process_status))
+
         #Read the Last Messages from the Sub Process
         self.Read()
 
@@ -263,7 +269,7 @@ class Command(object):
         brng = True
 
         if self._bdebug :
-          self._arr_rpt.append("prc ({}): Read checking ...".format(self._pid))
+          self._arr_rpt.append("prc ({}) [{}]: Read do ...".format(self._pid, self._process_status))
 
         #Read the Messages from the Sub Process
         self.Read()
@@ -297,12 +303,21 @@ class Command(object):
       scnk = None
       brd = True
 
+      if self._bdebug :
+        self._arr_rpt.append("prc ({}): '{}' read events".format(self._pid, len(events)))
+
       for key in events:
+        if self._bdebug :
+          self._arr_rpt.append("prc ({}) - event: '{}'".format(self._pid, str(key[0])))
+
         if key[0].fileobj == self._process.stdout :
-          scnk = self._process.stdout.read(self._package_size)
+          #------------------------
+          #Read STDOUT
 
           if self._bdebug :
             self._arr_rpt.append("pipe ({}): reading report ...".format(key[0].fd))
+
+          scnk = self._process.stdout.read1(self._package_size) #-1
 
           if scnk is not None :
             scnk = str(scnk, sys.stdout.encoding)
@@ -322,10 +337,13 @@ class Command(object):
             self._process.stdout.close()
 
         elif key[0].fileobj == self._process.stderr :
-          scnk = self._process.stderr.read(self._package_size)
+          #------------------------
+          #Read STDERR
 
           if self._bdebug :
             self._arr_rpt.append("pipe ({}): reading error ...".format(key[0].fd))
+
+          scnk = self._process.stderr.read1(self._package_size) # -1
 
           if scnk is not None :
             scnk = str(scnk, sys.stderr.encoding)
@@ -343,6 +361,13 @@ class Command(object):
 
             self._selector.unregister(self._process.stderr)
             self._process.stderr.close()
+
+      #for key in events
+
+      if self._bdebug :
+        self._arr_rpt.append("prc ({}): reading done.".format(self._pid))
+
+    #if self._process is not None
 
 
   def Wait(self):
