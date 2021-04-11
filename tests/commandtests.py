@@ -12,6 +12,7 @@ import unittest
 import re
 from re import IGNORECASE
 
+sys.path.append("./")
 sys.path.append("../")
 
 from libcommand import Command
@@ -30,8 +31,6 @@ class TestCommand(unittest.TestCase):
 
   def setUp(self):
     print("{} - go ...".format(sys._getframe().f_code.co_name))
-    print("setUp - Test Directory: '{}'".format(os.getcwd()))
-    print("setUp - Test Module: '{}'".format(__file__))
 
     self._sdirectory = os.getcwd() + '/'
 
@@ -40,10 +39,13 @@ class TestCommand(unittest.TestCase):
     slashpos = spath.rfind('/', 0)
 
     if slashpos != -1 :
+      self._sdirectory = spath[0 : slashpos + 1]
       self._smodule = spath[slashpos + 1 : len(spath)]
     else :
       self._smodule = spath
 
+    print("setUp - Test Directory: '{}'".format(self._sdirectory))
+    print("setUp - Test Module: '{}'".format(self._smodule))
     print("")
 
 
