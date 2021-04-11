@@ -7,6 +7,10 @@ The **Object Oriented Design** allows to create Groups of Child Processes and Ch
 
 ## Features
 Some important Features are:
+* Low Dependencies (uses only Python Core Packages)\
+  Low Dependency Usage leads to:
+	* Small Memory Footprint (Simple Structure Design leads to low Memory Usage)
+	* Fast Startup (very few additional Libraries to load)
 * Asynchronous Launch
 * Reads Big Outputs
 * Execution Timeout
