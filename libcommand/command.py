@@ -177,13 +177,13 @@ class Command(object):
       arrcmd = split(self._scommand)
 
       if self._bdebug :
-        self._arr_rpt.append("cmd arr: '{}'".format(str(arrcmd)))
+        self._arr_rpt.append("cmd arr: '{}'\n".format(str(arrcmd)))
 
       self._pid = -1
       self._process_status = -1
 
       if self._bdebug :
-        self._arr_rpt.append("cmd pfg '{}'".format(self._bprofiling))
+        self._arr_rpt.append("cmd pfg '{}'\n".format(self._bprofiling))
 
       if self._bprofiling :
         self._time_start = time.time()
@@ -204,14 +204,14 @@ class Command(object):
         brs = True
 
         if self._bdebug :
-          self._arr_rpt.append("Sub Process {}: Launch OK - PID ({})"\
+          self._arr_rpt.append("Sub Process {}: Launch OK - PID ({})\n"\
           .format(sprcnm, self._pid))
-          self._arr_rpt.append("prc ({}) - stdout: '{}'".format(self._pid, str(self._process.stdout)))
-          self._arr_rpt.append("prc ({}) - stderr: '{}'".format(self._pid, str(self._process.stderr)))
+          self._arr_rpt.append("prc ({}) - stdout: '{}'\n".format(self._pid, str(self._process.stdout)))
+          self._arr_rpt.append("prc ({}) - stderr: '{}'\n".format(self._pid, str(self._process.stderr)))
 
       except Exception as e :
-        self._arr_err.append("Command '{}': Launch failed with {}!".format(sprcnm, e.__class__.__name__))
-        self._arr_err.append("Exception [{}] Message: {}".format(e.errno, str(e)))
+        self._arr_err.append("Command '{}': Launch failed with {}!\n".format(sprcnm, e.__class__.__name__))
+        self._arr_err.append("Exception [{}] Message: {}\n".format(e.errno, str(e)))
         self._err_code = 1
         self._process_status = e.errno
         self._process = None
@@ -244,7 +244,7 @@ class Command(object):
         self._process_status = self._process.returncode
 
         if self._bdebug :
-          self._arr_rpt.append("prc ({}): finished with [{}].".format(self._pid, self._process_status))
+          self._arr_rpt.append("prc ({}): finished with [{}].\n".format(self._pid, self._process_status))
 
         if self._bprofiling :
           self._time_end = time.time()
@@ -252,12 +252,12 @@ class Command(object):
           self._time_execution = self._time_end - self._time_start
 
           if self._bdebug :
-            self._arr_rpt.append("Time Execution: '{}' s".format(self._time_execution))
+            self._arr_rpt.append("Time Execution: '{}' s\n".format(self._time_execution))
 
         #if(self._bprofiling)
 
         if self._bdebug :
-          self._arr_rpt.append("prc ({}) [{}]: Read do ...".format(self._pid, self._process_status))
+          self._arr_rpt.append("prc ({}) [{}]: Read do ...\n".format(self._pid, self._process_status))
 
         #Read the Last Messages from the Sub Process
         self.Read()
@@ -269,7 +269,7 @@ class Command(object):
         brng = True
 
         if self._bdebug :
-          self._arr_rpt.append("prc ({}) [{}]: Read do ...".format(self._pid, self._process_status))
+          self._arr_rpt.append("prc ({}) [{}]: Read do ...\n".format(self._pid, self._process_status))
 
         #Read the Messages from the Sub Process
         self.Read()
@@ -297,25 +297,25 @@ class Command(object):
 
     if self._process is not None :
       if self._bdebug :
-        self._arr_rpt.append("prc ({}) [{}]: try read ...".format(self._pid, self._process_status))
+        self._arr_rpt.append("prc ({}) [{}]: try read ...\n".format(self._pid, self._process_status))
 
       events = self._selector.select(self._read_timeout)
       scnk = None
       brd = True
 
       if self._bdebug :
-        self._arr_rpt.append("prc ({}): '{}' read events".format(self._pid, len(events)))
+        self._arr_rpt.append("prc ({}): '{}' read events\n".format(self._pid, len(events)))
 
       for key in events:
         if self._bdebug :
-          self._arr_rpt.append("prc ({}) - event: '{}'".format(self._pid, str(key[0])))
+          self._arr_rpt.append("prc ({}) - event: '{}'\n".format(self._pid, str(key[0])))
 
         if key[0].fileobj == self._process.stdout :
           #------------------------
           #Read STDOUT
 
           if self._bdebug :
-            self._arr_rpt.append("pipe ({}): reading report ...".format(key[0].fd))
+            self._arr_rpt.append("pipe ({}): reading report ...\n".format(key[0].fd))
 
           scnk = self._process.stdout.read1(self._package_size) #-1
 
@@ -331,7 +331,7 @@ class Command(object):
 
           if not brd :
             if self._bdebug :
-              self._arr_rpt.append("pipe ({}): transmission done.".format(key[0].fd))
+              self._arr_rpt.append("pipe ({}): transmission done.\n".format(key[0].fd))
 
             self._selector.unregister(self._process.stdout)
             self._process.stdout.close()
@@ -341,7 +341,7 @@ class Command(object):
           #Read STDERR
 
           if self._bdebug :
-            self._arr_rpt.append("pipe ({}): reading error ...".format(key[0].fd))
+            self._arr_rpt.append("pipe ({}): reading error ...\n".format(key[0].fd))
 
           scnk = self._process.stderr.read1(self._package_size) # -1
 
@@ -357,7 +357,7 @@ class Command(object):
 
           if not brd :
             if self._bdebug :
-              self._arr_rpt.append("pipe ({}): transmission done.".format(key[0].fd))
+              self._arr_rpt.append("pipe ({}): transmission done.\n".format(key[0].fd))
 
             self._selector.unregister(self._process.stderr)
             self._process.stderr.close()
@@ -365,7 +365,7 @@ class Command(object):
       #for key in events
 
       if self._bdebug :
-        self._arr_rpt.append("prc ({}): reading done.".format(self._pid))
+        self._arr_rpt.append("prc ({}): reading done.\n".format(self._pid))
 
     #if self._process is not None
 
@@ -405,12 +405,12 @@ class Command(object):
           itmrng = itmrngend - itmrngstrt
 
           if self._bdebug :
-            self._arr_rpt.append("wait tm rng: '{}'".format(itmrng))
+            self._arr_rpt.append("wait tm rng: '{}'\n".format(itmrng))
 
           if itmrng >= self._execution_timeout :
-            self._arr_err.append("Sub Process {}: Execution timed out!".format(sprcnm))
-            self._arr_err.append("Execution Time '{} / {}'".format(itmrng, self._execution_timeout))
-            self._arr_err.append("Process will be terminated.")
+            self._arr_err.append("Sub Process {}: Execution timed out!\n".format(sprcnm))
+            self._arr_err.append("Execution Time '{} / {}'\n".format(itmrng, self._execution_timeout))
+            self._arr_err.append("Process will be terminated.\n")
 
             if(self._err_code < 4):
               self._err_code = 4
@@ -443,30 +443,30 @@ class Command(object):
     sprcnm = self.getNameComplete()
 
     if self._bdebug :
-      self._arr_rpt.append("'{}' : Signal to '{}'"\
+      self._arr_rpt.append("'{}' : Signal to '{}'\n"\
       .format(sys._getframe(1).f_code.co_name, sys._getframe(0).f_code.co_name))
 
     if self.isRunning():
-      self._arr_err.append("Sub Process {}: Process terminating ...".format(sprcnm))
+      self._arr_err.append("Sub Process {}: Process terminating ...\n".format(sprcnm))
 
       if self._process is not None :
         self._process.terminate()
 
       self.Check()
     else :  #Sub Process is not running
-      self._arr_err.append("Sub Process ${sprcnm}: Process is not running.".format(sprcnm))
+      self._arr_err.append("Sub Process ${sprcnm}: Process is not running.\n".format(sprcnm))
 
 
   def Kill(self):
     sprcnm = self.getNameComplete()
 
     if self._bdebug :
-      self._arr_rpt.append("'{}' : Signal to '{}'"\
+      self._arr_rpt.append("'{}' : Signal to '{}'\n"\
       .format(sys._getframe(1).f_code.co_name, sys._getframe(0).f_code.co_name))
 
     if self.isRunning() :
-      self._arr_err.append("Sub Process {}: Process killing ...".format(sprcnm))
-      print("Sub Process {}: Process killing ...".format(sprcnm))
+      self._arr_err.append("Sub Process {}: Process killing ...\n".format(sprcnm))
+      print("Sub Process {}: Process killing ...\n".format(sprcnm))
 
       if self._process is not None :
         self._process.kill()
@@ -478,12 +478,12 @@ class Command(object):
         self._err_code = 4
 
     else :  #Sub Process is not running
-      self._arr_err.append("Sub Process ${sprcnm}: Process is not running.".format(sprcnm))
+      self._arr_err.append("Sub Process ${sprcnm}: Process is not running.\n".format(sprcnm))
 
 
   def freeResources(self):
     if self._bdebug :
-      self._arr_rpt.append("'{}' : Signal to '{}'"\
+      self._arr_rpt.append("'{}' : Signal to '{}'\n"\
       .format(sys._getframe(1).f_code.co_name, sys._getframe(0).f_code.co_name))
 
     if self.isRunning() :
@@ -558,14 +558,14 @@ class Command(object):
 
   def getReportString(self):
     if self._sreport is None :
-      self._sreport = "\n".join(self._arr_rpt)
+      self._sreport = ''.join(self._arr_rpt)
 
     return self._sreport
 
 
   def getErrorString(self):
     if self._serror is None :
-      self._serror = "\n".join(self._arr_err)
+      self._serror = ''.join(self._arr_err)
 
     return self._serror
 

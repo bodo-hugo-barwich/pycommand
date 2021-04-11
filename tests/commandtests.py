@@ -61,11 +61,11 @@ class TestCommand(unittest.TestCase):
 
     print("EXIT CODE: '{}'".format(arrrs[2]));
 
-    self.assertFalse(arrrs[0] == '', "STDOUT was not captured.\n")
+    self.assertFalse(arrrs[0] == '', "STDOUT was not captured.")
 
     print("STDOUT: '{}'".format(arrrs[0]));
 
-    self.assertFalse(arrrs[1] == '', "STDERR was not captured.\n")
+    self.assertFalse(arrrs[1] == '', "STDERR was not captured.")
 
     print("STDERR: '{}'".format(arrrs[1]));
 
@@ -82,8 +82,8 @@ class TestCommand(unittest.TestCase):
 
     cmdtest.setDictOptions({'check': 2, 'profiling': True})
 
-    self.assertNotEqual(cmdtest.getReadTimeout(), -1, "Read Timeout is not set")
-    self.assertTrue(cmdtest.isProfiling, 'Profiling is not enabled')
+    self.assertNotEqual(cmdtest.getReadTimeout(), -1, 'Read Timeout is not set')
+    self.assertTrue(cmdtest.isProfiling(), 'Profiling is not enabled')
 
     self.assertTrue(cmdtest.Launch(), "script '{}': Launch failed!".format(self._stestscript))
     self.assertTrue(cmdtest.Wait(), "script '{}': Execution failed!".format(self._stestscript))
@@ -92,12 +92,12 @@ class TestCommand(unittest.TestCase):
     scripterror = cmdtest.error
     iscriptstatus = cmdtest.status
 
+    print("ERROR CODE: '{}'".format(cmdtest.code))
+    print("EXIT CODE: '{}'".format(iscriptstatus))
     print("Execution Time: '{}'".format(cmdtest.execution_time));
 
     self.assertTrue(cmdtest.getExecutionTime() < cmdtest.getReadTimeout() * 2\
     , "Measured Time is greater or equal than the Read Timeout");
-
-    print("EXIT CODE: '{}'".format(iscriptstatus))
 
     if(scriptlog is not None):
       print("STDOUT: '{}'".format(scriptlog))
@@ -121,7 +121,8 @@ class TestCommand(unittest.TestCase):
     cmdtest = Command("{}{} {}".format(self._sdirectory, self._stestscript, self._itestpause)\
       , {'timeout': 5, 'check': 1, 'profiling': True})
 
-    self.assertNotEqual(cmdtest.getTimeout(), -1, "Execution Timeout is not set")
+    self.assertNotEqual(cmdtest.getTimeout(), -1, 'Execution Timeout is not set')
+    self.assertNotEqual(cmdtest.isProfiling(), 'Profiling is not enabled')
 
     self.assertTrue(cmdtest.Launch(), "script '{}': Launch failed!".format(self._stestscript))
     self.assertFalse(cmdtest.Wait(), "script '{}': Execution did not fail".format(self._stestscript))
@@ -132,6 +133,7 @@ class TestCommand(unittest.TestCase):
 
     print("ERROR CODE: '{}'".format(cmdtest.code))
     print("EXIT CODE: '{}'".format(iscriptstatus))
+    print("Execution Time: '{}'".format(cmdtest.execution_time));
 
     self.assertEqual(cmdtest.code, 4, "ERROR CODE '4' was not returned")
 
@@ -141,6 +143,9 @@ class TestCommand(unittest.TestCase):
     else :
       #Script informs Termination Signal
       self.assertTrue(iscriptstatus <= 4, "EXIT CODE is not correct")
+
+    self.assertTrue(cmdtest.getExecutionTime() < self._itestpause\
+    , "Measured Time is greater or equal than the Full Run Time");
 
     self.assertIsNotNone(scriptlog, "STDOUT was not captured")
 

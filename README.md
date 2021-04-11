@@ -64,11 +64,11 @@ class TestCommand(unittest.TestCase):
 
    print("EXIT CODE: '{}'".format(arrrs[2]));
 
-   self.assertFalse(arrrs[0] == '', "STDOUT was not captured.\n")
+   self.assertFalse(arrrs[0] == '', "STDOUT was not captured.")
 
    print("STDOUT: '{}'".format(arrrs[0]));
 
-   self.assertFalse(arrrs[1] == '', "STDERR was not captured.\n")
+   self.assertFalse(arrrs[1] == '', "STDERR was not captured.")
 
    print("STDERR: '{}'".format(arrrs[1]));
 
