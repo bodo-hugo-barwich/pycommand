@@ -26,57 +26,57 @@ Providing a similar functionality as the [`subprocess.run` Function](https://doc
 Demonstrating the `runCommand()` Function Use Case:
 ```python
 
-	import unittest
-	from libcommand import runCommand
+import unittest
+from libcommand import runCommand
 
 
-	class TestCommand(unittest.TestCase):
+class TestCommand(unittest.TestCase):
 
-	  _sdirectory = ''
-	  _smodule = ''
-	  _stestscript = 'test_script.py'
-	  _itestpause = 3
-	  _iteststatus = 4
+  _sdirectory = ''
+  _smodule = ''
+  _stestscript = 'test_script.py'
+  _itestpause = 3
+  _iteststatus = 4
 
-	  def setUp(self):
-	    print("{} - go ...".format(sys._getframe().f_code.co_name))
-	    print("setUp - Test Directory: '{}'".format(os.getcwd()))
-	    print("setUp - Test Module: '{}'".format(__file__))
+  def setUp(self):
+    print("{} - go ...".format(sys._getframe().f_code.co_name))
+    print("setUp - Test Directory: '{}'".format(os.getcwd()))
+    print("setUp - Test Module: '{}'".format(__file__))
 
-	    self._sdirectory = os.getcwd() + '/'
+    self._sdirectory = os.getcwd() + '/'
 
-	   spath = os.path.abspath(__file__);
+    spath = os.path.abspath(__file__);
 
-	   slashpos = spath.rfind('/', 0)
+    slashpos = spath.rfind('/', 0)
 
-	   if slashpos != -1 :
-	     self._smodule = spath[slashpos + 1 : len(spath)]
-	   else :
-	     self._smodule = spath
-
-
-	 def test_RunCommand(self):
-	   print("{} - go ...".format(sys._getframe().f_code.co_name))
-
-	   self._itestpause = 3
-
-	   arrrs = runCommand("{}{} {} {}".format(self._sdirectory, self._stestscript, self._itestpause, self._iteststatus))
-
-	   print("EXIT CODE: '{}'".format(arrrs[2]));
-
-	   self.assertFalse(arrrs[0] == '', "STDOUT was not captured.\n")
-
-	   print("STDOUT: '{}'".format(arrrs[0]));
-
-	   self.assertFalse(arrrs[1] == '', "STDERR was not captured.\n")
-
-	   print("STDERR: '{}'".format(arrrs[1]));
-
-	   print("")
+    if slashpos != -1 :
+      self._smodule = spath[slashpos + 1 : len(spath)]
+    else :
+      self._smodule = spath
 
 
-	if __name__ == "__main__":
-	  unittest.main()
+ def test_RunCommand(self):
+   print("{} - go ...".format(sys._getframe().f_code.co_name))
+
+   self._itestpause = 3
+
+   arrrs = runCommand("{}{} {} {}".format(self._sdirectory, self._stestscript, self._itestpause, self._iteststatus))
+
+   print("EXIT CODE: '{}'".format(arrrs[2]));
+
+   self.assertFalse(arrrs[0] == '', "STDOUT was not captured.\n")
+
+   print("STDOUT: '{}'".format(arrrs[0]));
+
+   self.assertFalse(arrrs[1] == '', "STDERR was not captured.\n")
+
+   print("STDERR: '{}'".format(arrrs[1]));
+
+   print("")
+
+
+if __name__ == "__main__":
+  unittest.main()
 
 
 ```
