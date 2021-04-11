@@ -1,3 +1,5 @@
+[![Automated Tests](https://github.com/bodo-hugo-barwich/pycommand/actions/workflows/python-package.yml/badge.svg)](https://github.com/bodo-hugo-barwich/pycommand/actions/workflows/python-package.yml)
+
 # Command
 
 Command - Python Package for Multiprocessing
