@@ -2,11 +2,10 @@
 This Module provides the `Command` Class which launches a Single Child Process
 in asynchronous Mode and captures possible Errors.
 
-:version: 2021-04-10
+:version: 2021-04-11
 
 :author: Bodo Hugo Barwich
 '''
-from texttable import len
 __docformat__ = "restructuredtext en"
 
 import sys

@@ -2,7 +2,7 @@
 '''
 Tests to verify the Command Class Functionality
 
-@version: 2021-04-10
+@version: 2021-04-11
 
 @author: Bodo Hugo Barwich
 '''
