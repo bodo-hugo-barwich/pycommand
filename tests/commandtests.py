@@ -24,7 +24,7 @@ class TestCommand(unittest.TestCase):
 
   _sdirectory = ''
   _smodule = ''
-  _stestscript = 'test_script.py'
+  _stestscript = 'command_script.py'
   _itestpause = 3
   _iteststatus = 4
 
@@ -56,7 +56,7 @@ class TestCommand(unittest.TestCase):
   def test_RunCommand(self):
     print("{} - go ...".format(sys._getframe().f_code.co_name))
 
-    self._stestscript = 'test_script.py'
+    self._stestscript = 'command_script.py'
     self._itestpause = 3
 
     arrrs = runCommand("{}{} {} {}".format(self._sdirectory, self._stestscript, self._itestpause, self._iteststatus))
@@ -77,7 +77,7 @@ class TestCommand(unittest.TestCase):
   def test_ReadTimeout(self):
     print("{} - go ...".format(sys._getframe().f_code.co_name))
 
-    self._stestscript = 'test_script.py'
+    self._stestscript = 'command_script.py'
     self._itestpause = 3
 
     cmdtest = Command("{}{} {}".format(self._sdirectory, self._stestscript, self._itestpause))
@@ -117,7 +117,7 @@ class TestCommand(unittest.TestCase):
   def test_ExecutionTimeout(self):
     print("{} - go ...".format(sys._getframe().f_code.co_name))
 
-    self._stestscript = 'test_script.py'
+    self._stestscript = 'command_script.py'
     self._itestpause = 30
 
     cmdtest = Command("{}{} {}".format(self._sdirectory, self._stestscript, self._itestpause)\
