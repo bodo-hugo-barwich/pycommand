@@ -1,4 +1,4 @@
-[![Automated Tests](https://github.com/bodo-hugo-barwich/pycommand/actions/workflows/python-package.yml/badge.svg)](https://github.com/bodo-hugo-barwich/pycommand/actions/workflows/python-package.yml)[![Build Status](https://travis-ci.com/bodo-hugo-barwich/pycommand.svg?branch=master)](https://travis-ci.com/bodo-hugo-barwich/pycommand)
+[![Automated Tests](https://github.com/bodo-hugo-barwich/pycommand/actions/workflows/python-package.yml/badge.svg)](https://github.com/bodo-hugo-barwich/pycommand/actions/workflows/python-package.yml) [![Build Status](https://travis-ci.com/bodo-hugo-barwich/pycommand.svg?branch=master)](https://travis-ci.com/bodo-hugo-barwich/pycommand)
 
 # Command
 
