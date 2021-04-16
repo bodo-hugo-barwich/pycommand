@@ -27,7 +27,8 @@ This Module was conceived out of the need to launch multiple Tasks simultaneousl
 As I developed it as Prototype at:
 [Multi Process Manager](https://stackoverflow.com/questions/50177534/why-do-pipes-from-child-processes-break-sometimes-and-sometimes-not)\
 The **Object Oriented Design** permits the implementation of the **[Command Pattern / Manager-Worker Pattern](https://en.wikipedia.org/wiki/Command_pattern)**.\
-Providing a similar functionality as the [`subprocess.run` Function](https://docs.python.org/3/library/subprocess.html#subprocess.run) it can serve as a Procedural Replacement for this function without the need of special error handling of possible Exceptions.
+Providing a similar functionality as the [`subprocess.run()` Function](https://docs.python.org/3/library/subprocess.html#subprocess.run) it can serve as a Procedural Replacement for this function without the need of special error handling of possible Exceptions. \
+This implementation aimes especially for Low Dependencies and Easy Installation.
 
 ## Usage
 ### runCommand() Function
