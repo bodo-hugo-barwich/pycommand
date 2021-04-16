@@ -2,7 +2,7 @@
 '''
 Tests to verify the Command Class Functionality
 
-@version: 2021-04-11
+@version: 2021-04-16
 
 @author: Bodo Hugo Barwich
 '''
@@ -24,7 +24,7 @@ class TestCommand(unittest.TestCase):
 
   _sdirectory = ''
   _smodule = ''
-  _stestscript = 'test_script.py'
+  _stestscript = 'command_script.py'
   _itestpause = 3
   _iteststatus = 4
 
@@ -56,7 +56,7 @@ class TestCommand(unittest.TestCase):
   def test_RunCommand(self):
     print("{} - go ...".format(sys._getframe().f_code.co_name))
 
-    self._stestscript = 'test_script.py'
+    self._stestscript = 'command_script.py'
     self._itestpause = 3
 
     arrrs = runCommand("{}{} {} {}".format(self._sdirectory, self._stestscript, self._itestpause, self._iteststatus))
@@ -77,7 +77,7 @@ class TestCommand(unittest.TestCase):
   def test_ReadTimeout(self):
     print("{} - go ...".format(sys._getframe().f_code.co_name))
 
-    self._stestscript = 'test_script.py'
+    self._stestscript = 'command_script.py'
     self._itestpause = 3
 
     cmdtest = Command("{}{} {}".format(self._sdirectory, self._stestscript, self._itestpause))
@@ -99,7 +99,7 @@ class TestCommand(unittest.TestCase):
     print("Execution Time: '{}'".format(cmdtest.execution_time));
 
     self.assertTrue(cmdtest.getExecutionTime() < cmdtest.getReadTimeout() * 2\
-    , "Measured Time is greater or equal than the Read Timeout");
+    , "Measured Time is greater or equal than the Read Timeout")
 
     if(scriptlog is not None):
       print("STDOUT: '{}'".format(scriptlog))
@@ -117,7 +117,7 @@ class TestCommand(unittest.TestCase):
   def test_ExecutionTimeout(self):
     print("{} - go ...".format(sys._getframe().f_code.co_name))
 
-    self._stestscript = 'test_script.py'
+    self._stestscript = 'command_script.py'
     self._itestpause = 30
 
     cmdtest = Command("{}{} {}".format(self._sdirectory, self._stestscript, self._itestpause)\
@@ -147,7 +147,7 @@ class TestCommand(unittest.TestCase):
       self.assertTrue(iscriptstatus <= 4, "EXIT CODE is not correct")
 
     self.assertTrue(cmdtest.getExecutionTime() < self._itestpause\
-    , "Measured Time is greater or equal than the Full Run Time");
+    , "Measured Time is greater or equal than the Full Run Time")
 
     self.assertIsNotNone(scriptlog, "STDOUT was not captured")
 
@@ -161,7 +161,7 @@ class TestCommand(unittest.TestCase):
 
       pat_tmout = re.compile('Execution timed out', re.IGNORECASE)
 
-      self.assertIsNotNone(pat_tmout.search(scripterror), "STDERR does not report Execution Timeout");
+      self.assertIsNotNone(pat_tmout.search(scripterror), "STDERR does not report Execution Timeout")
 
     #if scripterror is not None
 
@@ -208,7 +208,7 @@ class TestCommand(unittest.TestCase):
 
       pat_ntfnd = re.compile('no such file', re.IGNORECASE)
 
-      self.assertIsNotNone(pat_ntfnd.search(scripterror), "STDERR does not report Not Found Error");
+      self.assertIsNotNone(pat_ntfnd.search(scripterror), "STDERR does not report Not Found Error")
 
     #if scripterror is not None
 
@@ -255,7 +255,7 @@ class TestCommand(unittest.TestCase):
 
       pat_noperm = re.compile('permission denied', re.IGNORECASE)
 
-      self.assertIsNotNone(pat_noperm.search(scripterror), "STDERR does not report No Permission Error");
+      self.assertIsNotNone(pat_noperm.search(scripterror), "STDERR does not report No Permission Error")
 
     #if scripterror is not None
 
@@ -294,7 +294,7 @@ class TestCommand(unittest.TestCase):
 
       pat_synerr = re.compile('exec format error', re.IGNORECASE)
 
-      self.assertIsNotNone(pat_synerr.search(scripterror), "STDERR does not report Bash Error");
+      self.assertIsNotNone(pat_synerr.search(scripterror), "STDERR does not report Bash Error")
 
     #if scripterror is not None
 
