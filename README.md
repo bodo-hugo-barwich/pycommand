@@ -1,4 +1,4 @@
-[![Automated Tests](https://github.com/bodo-hugo-barwich/pycommand/actions/workflows/python-package.yml/badge.svg)](https://github.com/bodo-hugo-barwich/pycommand/actions/workflows/python-package.yml)
+[![Automated Tests](https://github.com/bodo-hugo-barwich/pycommand/actions/workflows/python-package.yml/badge.svg)](https://github.com/bodo-hugo-barwich/pycommand/actions/workflows/python-package.yml)[![Build Status](https://travis-ci.com/bodo-hugo-barwich/pycommand.svg?branch=master)](https://travis-ci.com/bodo-hugo-barwich/pycommand)
 
 # Command
 
@@ -11,6 +11,8 @@ The **Object Oriented Design** allows to create Groups of Child Processes and Ch
 Some important Features are:
 * Low Dependencies (uses only Python Core Packages)\
   Low Dependency Usage leads to:
+  	* Very High Compatibility (only Python 3 is required)
+  	* Easy Installation
 	* Small Memory Footprint (Simple Structure Design leads to low Memory Usage)
 	* Fast Startup (very few additional Libraries to load)
 * Asynchronous Launch
