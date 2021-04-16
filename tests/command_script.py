@@ -4,7 +4,7 @@ This Script is the Test Script which is run in the Command Module Test
 It generates Output to STDOUT and STDERR
 It returns the EXIT CODE passed as Parameter. Only Positive Integer EXIT CODES are allowed
 
-:version: 2021-04-10
+:version: 2021-04-16
 
 :author: Bodo Hugo Barwich
 '''
