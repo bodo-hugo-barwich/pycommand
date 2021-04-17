@@ -95,11 +95,13 @@ class CommandGroup(object):
       self._check_interval = -1
 
     if self._check_interval > 0 \
-    and self._arr_commands.len > 0 :
-      irdtmout = math.floor(self._check_interval / self._arr_commands.len)
+    and len(self._arr_commands) > 0 :
+      irdtmout = math.floor(self._check_interval / len(self._arr_commands))
 
       #Save the required Read Timeout
       self.setReadTimeout(irdtmout)
+
+    #if self._check_interval > 0 and len(self._arr_commands) > 0
 
 
   def setReadTimeout(self, ireadtimeout = 1):
@@ -107,25 +109,63 @@ class CommandGroup(object):
       self._read_timeout = ireadtimeout
     except :
       #The Parameter is not a Number
+      #Disable Read Timeout
       self._read_timeout = 0
 
     if self._read_timeout < 0 :
       #Disable Read Timeout
       self._read_timeout = 0
 
-    if self._arr_commands.len > 0 :
+    if len(self._arr_commands) > 0 :
       for cmd in self._arr_commands :
         cmd.setReadTimeout(self._read_timeout)
+
+    #if len(self._arr_commands) > 0
 
 
   def setTimeout(self, iexecutiontimeout = -1 ):
     try :
       self._execution_timeout = iexecutiontimeout
     except :
+      #The Parameter is not a Number
+      #Disable Execution Timeout
       self._execution_timeout = -1
 
     if self._execution_timeout < -1 :
       self._execution_timeout = -1
+
+
+  def Add(self, ocommand = None):
+    ors = None
+
+    if ocommand is not None :
+      ors = ocommand
+
+      if not isinstance('Command', ors) :
+        ors = None
+
+    #if ocommand is not None
+
+    if ors is None :
+      #Create a new Command Object
+      ors = Command()
+
+    #Add the Command Object to the List
+    self._arr_commands.append(ors)
+
+    return ors
+
+
+  def addsCommandLine(self, scommandline = '', options = {}):
+    #Create a new Command Object
+    ors = Command(scommandline, options)
+
+    #Add the Command Object to the List
+    self._arr_commands.append(ors)
+
+    return ors
+
+
 
 
 
