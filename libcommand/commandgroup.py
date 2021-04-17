@@ -8,7 +8,11 @@ It executes and monitores the `Command` objects.
 '''
 __docformat__ = "restructuredtext en"
 
+import sys
 import math
+import time
+from datetime import datetime
+
 
 from .command import Command
 
@@ -166,6 +170,65 @@ class CommandGroup(object):
     return ors
 
 
+  def Launch(self):
+    irs = 0
+    icmdcnt = len(self._arr_commands)
+
+    if self._bdebug :
+      self._arr_rpt.append("{} - go ...\n".format(sys._getframe(0).f_code.co_name))
+      self._arr_rpt.append("arr cmd cnt: '{}'\n".format(icmdcnt))
+
+    if icmdcnt > 0 :
+      cmd = None
+      scmdnm = ''
+      icmdidx = -1
+
+      stmnow = None
+
+
+      if self._check_interval > 0 \
+      and self._read_timeout > 0 \
+      and self._read_timeout * icmdcnt > self._check_interval :
+        #Readjust the Check Interval
+        self.setCheckInterval(self._check_interval)
+
+      if self._execution_timeout > -1 :
+        #Keep track of the Start Time
+        self._start_time = time.time()
+
+      for icmdidx in range(0, icmdcnt):
+        cmd = self._arr_commands[icmdidx]
+
+        if cmd is not None :
+          scmdnm = "No. '{}' - {}".format(icmdidx, cmd.getNameComplete())
+
+          stmnow = datetime.now().strftime('%F %T')
+
+          self._arr_rpt.append("{} : Sub Process {}: Launching ...\n".format(stmnow, scmdnm))
+
+          #Launch the Sub Process through Process::SubProcess::Launch()
+          if cmd.Launch() :
+            stmnow  = datetime.now().strftime('%F %T')
+
+            self._arr_rpt.append("{} : Sub Process {}: Launch OK - PID ({})\n"\
+            .format(stmnow, scmdnm, cmd.getProcessID()))
+
+            irs += 1
+          else :  #Sub Process Launch failed
+            if cmd.code > self._err_code :
+              #Keep the Child Process Error Code
+              self._err_code = cmd.code
+
+            self._arr_err.append("Sub Process {}: Launch failed!\nMessage: {}\n"\
+            .format(scmdnm, cmd.error))
+
+          #if cmd.Launch()
+        #if cmd is not None
+      #for icmdidx in range(0, icmdcnt)
+    #if icmdcnt > 0
+
+
+    return irs
 
 
 
