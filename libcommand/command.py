@@ -2,7 +2,7 @@
 This Module provides the `Command` Class which launches a Single Child Process
 in asynchronous Mode and captures possible Errors.
 
-:version: 2021-04-11
+:version: 2021-04-17
 
 :author: Bodo Hugo Barwich
 '''
@@ -14,6 +14,10 @@ import selectors
 import time
 from shlex import split
 
+
+
+#==============================================================================
+# The Command Class
 
 
 class Command(object):

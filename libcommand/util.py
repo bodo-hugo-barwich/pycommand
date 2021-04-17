@@ -1,10 +1,12 @@
 '''
 This Module provides static functions to interact with `Command` objects
 
-@version: 2021-04-03
+@version: 2021-04-17
 
 @author: Bodo Hugo Barwich
 '''
+__docformat__ = "restructuredtext en"
+
 from .command import Command
 
 
