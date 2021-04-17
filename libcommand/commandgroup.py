@@ -6,6 +6,7 @@ It executes and monitores the `Command` objects.
 
 :author: Bodo Hugo Barwich
 '''
+import cmd
 __docformat__ = "restructuredtext en"
 
 import sys
@@ -89,7 +90,7 @@ class CommandGroup(object):
 
   def setCheckInterval(self, icheckinterval = -1):
     try :
-      self._check_interval = icheckinterval
+      self._check_interval = int(icheckinterval)
     except :
       #The Parameter is not a Number
       self._check_interval = -1
@@ -110,7 +111,7 @@ class CommandGroup(object):
 
   def setReadTimeout(self, ireadtimeout = 1):
     try :
-      self._read_timeout = ireadtimeout
+      self._read_timeout = int(ireadtimeout)
     except :
       #The Parameter is not a Number
       #Disable Read Timeout
@@ -129,7 +130,7 @@ class CommandGroup(object):
 
   def setTimeout(self, iexecutiontimeout = -1 ):
     try :
-      self._execution_timeout = iexecutiontimeout
+      self._execution_timeout = int(iexecutiontimeout)
     except :
       #The Parameter is not a Number
       #Disable Execution Timeout
@@ -189,7 +190,7 @@ class CommandGroup(object):
       if self._check_interval > 0 \
       and self._read_timeout > 0 \
       and self._read_timeout * icmdcnt > self._check_interval :
-        #Readjust the Check Interval
+        #Re-adjust the Check Interval
         self.setCheckInterval(self._check_interval)
 
       if self._execution_timeout > -1 :
@@ -229,6 +230,196 @@ class CommandGroup(object):
 
 
     return irs
+
+
+  def checkiCommand(self, iindex):
+    cmd = None
+    brs = False
+
+    cmd =  self.getiCommand(iindex)
+
+    if cmd is not None :
+      if cmd.isRunning():
+        brs = cmd.Check()
+
+    return brs
+
+
+  def Check(self):
+    irs = 0
+    icmdcnt = len(self._arr_commands);
+
+    if self._bdebug :
+      self._arr_rpt.append("{} - go ...\n".format(sys._getframe(0).f_code.co_name))
+      self._arr_rpt.append("arr cmd cnt: '{}'\n".format(icmdcnt))
+
+    if icmdcnt > 0 :
+      cmd = None
+      scmdnm = None
+      icmdidx = 0
+      bchkgo = True
+
+      stmnow = None
+
+      while bchkgo \
+      and icmdidx < icmdcnt :
+        cmd = self._arr_commands[icmdidx]
+
+        if cmd is not None :
+          scmdnm = cmd.getNameComplete()
+
+          if self._bdebug :
+            self._arr_rpt.append("Sub Process {}: checking ...\n".format(scmdnm))
+
+          if cmd.isRunning():
+            if cmd.Check():
+              #Count the Running Child Processes
+              irs += 1
+            else :  #The Child Process has finished
+              stmnow = datetime.now().strftime('%F %T')
+
+              self._arr_rpt.append("{} : Sub Process {}: finished with [{}]\n"\
+              .format(stmnow, scmdnm, cmd.status))
+
+              #cmd.freeResources()
+            #if cmd.Check()
+
+            if self._execution_timeout > -1 :
+              if time.time() - self._start_time > self._execution_timeout :
+                #Stop the Checks on Execution Timeout
+                bchkgo = False
+
+          else :  #The Sub Process is already finished
+            if cmd.getProcessID() > 0 :
+              if self._bdebug :
+                self._arr_rpt.append("Sub Process {}: already finished with [{}]\n"\
+                .format(scmdnm, cmd.status))
+
+              #cmd.freeResources()
+            #if cmd.getProcessID() > 0
+          #if cmd.isRunning()
+        #if cmd is not None
+
+        icmdidx  += 1
+
+      #while bchkgo and icmdidx < icmdcnt
+    #if icmdcnt > 0
+
+    #Count of the Running Child Processes
+    return irs
+
+
+  def Wait(self, options = {}):
+    #At least check the Child Processes once
+    irng = 1
+    brs = False
+
+    itmchk = -1
+    itmchkstrt = -1
+    itmchkend = -1
+    itmrng = -1
+    itmrngstrt = -1
+    itmrngend = -1
+
+    if self._bdebug :
+      self._arr_rpt.append("{} - go ...\n".format(sys._getframe(0).f_code.co_name))
+
+    if len(options) > 0 :
+      self.setDictOptions(options)
+
+    if self._start_time < 1 :
+      #Set the Start Time if it is not set yet
+      self._start_time = time.time()
+
+    #As long as there are Running Child Processes
+    while irng > 1 :
+      if self._check_interval > -1 \
+      or self._execution_timeout > -1 :
+        if itmchkstrt < 1 :
+          #Take the Time measured at Launch Time
+          itmchkstrt = self._start_time
+        else :  #It is not the first Check
+          itmchkstrt = time.time()
+
+        if self._execution_timeout > -1 :
+          if itmrngstrt < 1 :
+            itmrng = 0
+            itmrngstrt = itmchkstrt
+
+        #if self._execution_timeout > -1
+      #if self._check_interval > -1 or self._execution_timeout > -1
+
+      #Check the Child Processes
+      irng = self.Check()
+
+      if irng > 0 :
+        if self._check_interval > -1 \
+        or self._execution_timeout > -1 :
+          itmchkend = time.time()
+          itmrngend = itmchkend
+
+          itmchk = itmchkend - itmchkstrt
+          itmrng = itmrngend - itmrngstrt
+
+          if self._bdebug :
+            self._arr_rpt.append("wait - tm rng: '{}'; tm chk: '{}'\n".format(itmrng, itmchk))
+
+          if self._execution_timeout > -1 \
+          and itmrng >= self._execution_timeout :
+            self._arr_err.append("Sub Processes 'Count: {}': Execution timed out!\n".format(irng))
+            self._arr_err.append("Execution Time '{} / {}'\nProcesses will be terminated.\n"\
+            .format(itmrng, self._execution_timeout))
+
+            if self._err_code < 4 :
+              self._err_code = 4
+
+            #self.Terminate()
+            irng = -1
+          #if self._execution_timeout > -1 and itmrng >= self._execution_timeout
+
+          if irng > 0 \
+          and itmchk < self._check_interval :
+            if self._bdebug :
+              self._arr_rpt.append("wait - sleep '{}' s ...\n".format(self._check_interval - itmchk))
+
+            time.sleep(self._check_interval - itmchk)
+
+        #if self._check_interval > -1 or self._execution_timeout > -1
+      #if irng > 0
+    #while irng > 1
+
+    if irng == 0 :
+      #Mark as Finished correctly
+      brs = True
+    elif irng < 0 :
+      #Mark as Failed if the Sub Process was Terminated
+      brs = False
+
+    return brs
+
+
+
+
+
+  #----------------------------------------------------------------------------
+  #Consultation Methods
+
+
+  def getiCommand(self, iindex):
+    rscmd = None
+
+    try :
+      iidx = int(iindex)
+    except :
+      #Index must be a positive whole Number
+      iidx = -1
+
+    if iidx > -1 \
+    and iidx < len(self._arr_commands) :
+      rscmd = self._arr_commands[iidx]
+
+    return rscmd
+
 
 
 
