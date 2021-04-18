@@ -2,18 +2,16 @@
 This Module provides the `CommandGroup` Class which manages multiple `Command` objects.
 It executes and monitores the `Command` objects.
 
-:version: 2021-04-17
+:version: 2021-04-18
 
 :author: Bodo Hugo Barwich
 '''
-import cmd
 __docformat__ = "restructuredtext en"
 
 import sys
 import math
 import time
 from datetime import datetime
-
 
 from .command import Command
 
@@ -233,7 +231,6 @@ class CommandGroup(object):
 
 
   def checkiCommand(self, iindex):
-    cmd = None
     brs = False
 
     cmd =  self.getiCommand(iindex)
@@ -373,7 +370,7 @@ class CommandGroup(object):
             if self._err_code < 4 :
               self._err_code = 4
 
-            #self.Terminate()
+            self.Terminate()
             irng = -1
           #if self._execution_timeout > -1 and itmrng >= self._execution_timeout
 
@@ -396,6 +393,54 @@ class CommandGroup(object):
       brs = False
 
     return brs
+
+
+  def Run(self, options = {}):
+    brs = False
+
+    if self._bdebug :
+      self._arr_rpt.append("{} - go ...\n".format(sys._getframe(0).f_code.co_name))
+
+    if len(options) > 0 :
+      self.setDictOptions(options)
+
+    if self.Launch() :
+      brs = self.Wait()
+    else :  #Child Process Launch failed
+      self._arr_err.append("Sub Processes: Process Launch failed!\n")
+
+    return brs
+
+
+  def Terminate(self):
+    if self._bdebug :
+      self._arr_rpt.append("'{}' : Signal to '{}'\n"\
+      .format(sys._getframe(1).f_code.co_name, sys._getframe(0).f_code.co_name))
+
+    self._arr_err.append("Sub Processes: Processes terminating ...\n")
+
+    for cmd in self._arr_commands :
+      if cmd.isRunning() :
+        #Terminate the Child Process
+        cmd.Terminate()
+
+    #for cmd in self._arr_commands
+
+
+  def Kill(self):
+    if self._bdebug :
+      self._arr_rpt.append("'{}' : Signal to '{}'\n"\
+      .format(sys._getframe(1).f_code.co_name, sys._getframe(0).f_code.co_name))
+
+    self._arr_err.append("Sub Processes: Processes killing ...\n")
+
+    for cmd in self._arr_commands :
+      if cmd.isRunning() :
+        #Kill the Child Process
+        cmd.Kill()
+
+    #for cmd in self._arr_commands
+
 
 
 
