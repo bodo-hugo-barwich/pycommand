@@ -138,6 +138,25 @@ class CommandGroup(object):
       self._execution_timeout = -1
 
 
+  def setProfiling(self, bisprofiling = True):
+    self._bprofiling = bisprofiling
+
+    for cmd in self._arr_commands :
+      #Communicate the Change to all Child Processes
+      cmd.setProfiling(self._bprofiling)
+
+    #for cmd in self._arr_commands
+
+
+  def setDebug(self, bisdebug = True):
+    self._bdebug = bisdebug
+
+
+  def setQuiet(self, bisquiet = True):
+    self._bquiet = bisquiet
+
+
+
   def Add(self, ocommand = None):
     ors = None
 
@@ -588,12 +607,19 @@ class CommandGroup(object):
 
 
 
-
   #-----------------------------------------------------------------------------------------
   #Properties
 
 
+  running = property(getRunningCount)
+  free = property(getFreeCount)
+  finished = property(getFinishedCount)
   len = property(getCommandCount)
+  read_timeout = property(getReadTimeout, setReadTimeout)
+  timeout = property(getTimeout, setTimeout)
+  #execution_time = property(getExecutionTime)
+  profiling = property(isProfiling, setProfiling)
+  debug = property(isDebug, setDebug)
   report = property(getReportString)
   error = property(getErrorString)
   code = property(getErrorCode)
