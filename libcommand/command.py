@@ -500,6 +500,23 @@ class Command(object):
         self._selector = None
 
 
+  def clearErrors(self):
+
+    self._pid = -1
+    self._process_status = -1
+
+    self._arr_rpt = []
+    self._arr_err = []
+    self._sreport = None
+    self._serror = None
+    self._err_code = 0
+
+    if self._bprofiling :
+      self._time_execution = -1
+      self._time_start = -1
+      self._time_end = -1
+
+
 
   #-----------------------------------------------------------------------------------------
   #Consultation Methods

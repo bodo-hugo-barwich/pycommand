@@ -442,7 +442,44 @@ class CommandGroup(object):
     #for cmd in self._arr_commands
 
 
+  def freeResources(self):
+    if self._bdebug :
+      self._arr_rpt.append("'{}' : Signal to '{}'\n"\
+      .format(sys._getframe(1).f_code.co_name, sys._getframe(0).f_code.co_name))
 
+    for cmd in self._arr_commands :
+      #Free all Child Processes System Resources
+      cmd.freeResources()
+
+    #for cmd in self._arr_commands
+
+
+  def clearErrors(self):
+    if self._bdebug :
+      sdbgmsg = "'{}' : Call on '{}'\n"\
+      .format(sys._getframe(1).f_code.co_name, sys._getframe(0).f_code.co_name)
+
+    for cmd in self._arr_commands :
+      #Free all Child Processes System Resources
+      cmd.clearErrors()
+
+    #for cmd in self._arr_commands
+
+    self._arr_rpt = []
+    self._arr_err = []
+    self._sreport = None
+    self._serror = None
+    self._err_code = 0
+
+    self._time_start = -1
+
+    if self._bprofiling :
+      self._time_execution = -1
+      self._time_end = -1
+
+    if self._bdebug :
+      #Readd last Debug Message
+      self._arr_rpt.append(sdbgmsg)
 
 
 
@@ -466,5 +503,99 @@ class CommandGroup(object):
     return rscmd
 
 
+  def getCheckInterval(self):
+    return self._check_interval
+
+
+  def getReadTimeout(self):
+    return self._read_timeout
+
+
+  def getTimeout(self):
+    return self._execution_timeout
+
+
+  def getCommandCount(self):
+    return len(self._arr_commands)
+
+
+  def getRunningCount(self):
+    irng = 0
+
+    for cmd in self._arr_commands :
+      if cmd.isRunning() :
+        irng += 1
+
+    #for cmd in self._arr_commands
+
+    return irng
+
+
+  def getFreeCount(self):
+    ifrrs = 0
+
+    for cmd in self._arr_commands :
+      if not cmd.isRunning() :
+        ifrrs += 1
+
+    #for cmd in self._arr_commands
+
+    return ifrrs
+
+
+  def getFinishedCount(self):
+    ifnshd = 0
+
+    for cmd in self._arr_commands :
+      if not cmd.isRunning() \
+      and cmd.getProcessID > 0 :
+        #The Child Process was launched, has finished and was not reset yet
+        ifnshd += 0
+
+    #for cmd in self._arr_commands
+
+    return ifnshd
+
+
+  def getReportString(self):
+    if self._sreport is None :
+      self._sreport = ''.join(self._arr_rpt)
+
+    return self._sreport
+
+
+  def getErrorString(self):
+    if self._serror is None :
+      self._serror = ''.join(self._arr_err)
+
+    return self._serror
+
+
+  def getErrorCode(self):
+    return self._err_code
+
+
+  def isProfiling(self):
+    return self._bprofiling
+
+
+  def isDebug(self):
+    return self._bdebug
+
+
+  def isQuiet(self):
+    return self._bquiet
+
+
+
+
+  #-----------------------------------------------------------------------------------------
+  #Properties
+
+
+  len = property(getCommandCount)
+  report = property(getReportString)
+  error = property(getErrorString)
+  code = property(getErrorCode)
 
 
