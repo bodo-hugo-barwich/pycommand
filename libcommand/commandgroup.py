@@ -163,7 +163,7 @@ class CommandGroup(object):
     if ocommand is not None :
       ors = ocommand
 
-      if not isinstance('Command', ors) :
+      if not isinstance(ors, Command) :
         ors = None
 
     #if ocommand is not None
@@ -343,17 +343,17 @@ class CommandGroup(object):
     if len(options) > 0 :
       self.setDictOptions(options)
 
-    if self._start_time < 1 :
+    if self._time_start < 1 :
       #Set the Start Time if it is not set yet
-      self._start_time = time.time()
+      self._time_start = time.time()
 
     #As long as there are Running Child Processes
-    while irng > 1 :
+    while irng > 0 :
       if self._check_interval > -1 \
       or self._execution_timeout > -1 :
         if itmchkstrt < 1 :
           #Take the Time measured at Launch Time
-          itmchkstrt = self._start_time
+          itmchkstrt = self._time_start
         else :  #It is not the first Check
           itmchkstrt = time.time()
 
