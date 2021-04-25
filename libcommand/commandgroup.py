@@ -567,7 +567,7 @@ class CommandGroup(object):
 
     for cmd in self._arr_commands :
       if not cmd.isRunning() \
-      and cmd.getProcessID > 0 :
+      and cmd.getProcessID() > 0 :
         #The Child Process was launched, has finished and was not reset yet
         ifnshd += 0
 

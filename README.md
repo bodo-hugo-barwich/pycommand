@@ -31,9 +31,9 @@ Providing a similar functionality as the [`subprocess.run()` Function](https://d
 This implementation aimes especially for Low Dependencies and Easy Installation.
 
 ### Example Use Case
-The Power of this Library is best shown by an Example Use Case as seen in the `test_CommandGroupRun()` Test:
-Having 3 Jobs at hand of 2 seconds, 3 seconds and 1 second running them sequencially would take aproximately **6 seconds**.
-But using the `CommandGroup` Class it takes effectively only **3 seconds** to complete.
+The Power of this Library is best shown by an Example Use Case as seen in the `test_CommandGroupRun()` Test:\
+Having 3 Jobs at hand of 2 seconds, 3 seconds and 1 second running them sequencially would take aproximately **6 seconds**.\
+But using the `CommandGroup` Class it takes effectively only **3 seconds** to complete.\
 And still each Job can be evaluated separately by their own Results keeping Log Message separate from Error Messages and viewing them in their context.
 ```text
 test module: './commandgrouptests.py'
@@ -104,10 +104,9 @@ script 'command_script.py' END 1 ERROR
 
 ## Usage
 ### runCommand() Function
-The `pytest` test suite `test_RunCommand()` demonstrates the `runCommand()` Function Use Case
-which is easy to use and straight forward:
+The `runCommand()` Function is easy to use and straight forward.\
+It is best seen in the `pytest` `test_RunCommand()` Test:\
 ```python
-
 from libcommand import runCommand
 
 

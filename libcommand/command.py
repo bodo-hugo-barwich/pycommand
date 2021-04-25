@@ -2,7 +2,7 @@
 This Module provides the `Command` Class which launches a Single Child Process
 in asynchronous Mode and captures possible Errors.
 
-:version: 2021-04-17
+:version: 2021-04-25
 
 :author: Bodo Hugo Barwich
 '''
@@ -265,6 +265,9 @@ class Command(object):
         #Read the Last Messages from the Sub Process
         self.Read()
 
+        #Free the Pipe Selector Resources
+        self._freeSelector()
+
       else :
         #------------------------
         #The Child Process is running
@@ -484,6 +487,36 @@ class Command(object):
       self._arr_err.append("Sub Process ${sprcnm}: Process is not running.\n".format(sprcnm))
 
 
+  def _freeSelector(self):
+    if self._bdebug :
+      self._arr_rpt.append("'{}' : Signal to '{}'\n"\
+      .format(sys._getframe(1).f_code.co_name, sys._getframe(0).f_code.co_name))
+
+    #Resource can only be freed if the Sub Process has terminated
+    if not self.isRunning() :
+      if self._selector is not None :
+        pipes = list(self._selector.get_map().keys())
+
+        #print("pipes list: '{}'".format(str(pipes)))
+
+        for pp in pipes :
+          key = self._selector.get_key(pp)
+
+          #print("key: '{}'".format(str(key)))
+
+          if self._bdebug :
+            self._arr_rpt.append("pipe ({}): not closed. Closing now ...\n".format(key.fd))
+
+          self._selector.unregister(key.fileobj)
+          key.fileobj.close()
+
+        #for pp in pipes
+
+        self._selector.close()
+        self._selector = None
+
+
+
   def freeResources(self):
     if self._bdebug :
       self._arr_rpt.append("'{}' : Signal to '{}'\n"\
@@ -493,11 +526,11 @@ class Command(object):
       #Kill a still running Sub Process
       self.Kill()
 
-    #Resource can only be freed if the Sub Process has terminated
-    if not self.isRunning() :
-      if self._selector is not None :
-        self._selector.close()
-        self._selector = None
+    #Free the Pipe Selector Resources
+    self._freeSelector()
+
+    #Free the Sub Process Object
+    self._process = None
 
 
   def clearErrors(self):
