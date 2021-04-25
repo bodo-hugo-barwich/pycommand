@@ -30,62 +30,128 @@ The **Object Oriented Design** permits the implementation of the **[Command Patt
 Providing a similar functionality as the [`subprocess.run()` Function](https://docs.python.org/3/library/subprocess.html#subprocess.run) it can serve as a Procedural Replacement for this function without the need of special error handling of possible Exceptions. \
 This implementation aimes especially for Low Dependencies and Easy Installation.
 
+### Example Use Case
+The Power of this Library is best shown by an Example Use Case as seen in the `test_CommandGroupRun()` Test:
+Having 3 Jobs at hand of 2 seconds, 3 seconds and 1 second running them sequencially would take aproximately **6 seconds**.
+But using the `CommandGroup` Class it takes effectively only **3 seconds** to complete.
+And still each Job can be evaluated separately by their own Results keeping Log Message separate from Error Messages and viewing them in their context.
+```text
+test module: './commandgrouptests.py'
+test module absolute path: '/path/to/pycommand/tests/commandgrouptests.py'
+tests starting ...
+
+setUp - go ...
+setUp - Test Directory: '/path/to/pycommand/tests/'
+setUp - Test Module: 'commandgrouptests.py'
+
+test_CommandGroupRun - go ...
+Command Group Execution Start - Time Now: '1619352416.777284' s
+Command Group Execution End - Time Now: '1619352419.8313038' s
+Command Group Execution finished in '3054.0199279785156' ms
+Command Group Execution Time '3 / 3' s
+Command  (4202) 'command-script:2s' :
+ERROR CODE: ' 0 '
+EXIT CODE: '0'
+STDOUT: ' Start - Time Now: '1619352416.82219'
+Number of arguments: 2 arguments.
+Argument List: ['/path/to/pycommand/tests/command_script.py', '2']
+test script absolute path: '/path/to/pycommand/tests/command_script.py'
+script 'command_script.py' START 0
+script 'command_script.py' PAUSE '2' ...
+script 'command_script.py' END 1
+End - Time Now: '1619352418.8242822'
+script 'command_script.py' done in '2002.0921230316162' ms
+script 'command_script.py' EXIT '0'
+ '
+STDERR: ' script 'command_script.py' START 0 ERROR
+script 'command_script.py' END 1 ERROR
+ '
+Command  (4203) 'command-script:3s' :
+ERROR CODE: ' 0 '
+EXIT CODE: '0'
+STDOUT: ' Start - Time Now: '1619352416.824399'
+Number of arguments: 2 arguments.
+Argument List: ['/path/to/pycommand/tests/command_script.py', '3']
+test script absolute path: '/path/to/pycommand/tests/command_script.py'
+script 'command_script.py' START 0
+script 'command_script.py' PAUSE '3' ...
+script 'command_script.py' END 1
+End - Time Now: '1619352419.8276176'
+script 'command_script.py' done in '3003.218650817871' ms
+script 'command_script.py' EXIT '0'
+ '
+STDERR: ' script 'command_script.py' START 0 ERROR
+script 'command_script.py' END 1 ERROR
+ '
+Command  (4204) 'command-script:1s' :
+ERROR CODE: ' 0 '
+EXIT CODE: '0'
+STDOUT: ' Start - Time Now: '1619352416.8315842'
+Number of arguments: 2 arguments.
+Argument List: ['/path/to/pycommand/tests/command_script.py', '1']
+test script absolute path: '/path/to/pycommand/tests/command_script.py'
+script 'command_script.py' START 0
+script 'command_script.py' PAUSE '1' ...
+script 'command_script.py' END 1
+End - Time Now: '1619352417.832275'
+script 'command_script.py' done in '1000.6906986236572' ms
+script 'command_script.py' EXIT '0'
+ '
+STDERR: ' script 'command_script.py' START 0 ERROR
+script 'command_script.py' END 1 ERROR
+ '
+```
+
 ## Usage
 ### runCommand() Function
-Demonstrating the `runCommand()` Function Use Case:
+The `pytest` test suite `test_RunCommand()` demonstrates the `runCommand()` Function Use Case
+which is easy to use and straight forward:
 ```python
 
-import unittest
 from libcommand import runCommand
 
 
-class TestCommand(unittest.TestCase):
+sdirectory = os.getcwd() + '/'
+smodule = ''
+stestscript = 'command_script.py'
+itestpause = 3
+iteststatus = 4
 
-  _sdirectory = ''
-  _smodule = ''
-  _stestscript = 'test_script.py'
-  _itestpause = 3
-  _iteststatus = 4
+spath = os.path.abspath(__file__);
 
-  def setUp(self):
-    print("{} - go ...".format(sys._getframe().f_code.co_name))
-    print("setUp - Test Directory: '{}'".format(os.getcwd()))
-    print("setUp - Test Module: '{}'".format(__file__))
+print("test script absolute path: '{}'".format(spath))
 
-    self._sdirectory = os.getcwd() + '/'
+slashpos = spath.rfind('/', 0)
 
-    spath = os.path.abspath(__file__);
+if slashpos != -1 :
+  sdirectory = spath[0 : slashpos + 1]
+  smodule = spath[slashpos + 1 : len(spath)]
+else :
+  smodule = spath
 
-    slashpos = spath.rfind('/', 0)
-
-    if slashpos != -1 :
-      self._smodule = spath[slashpos + 1 : len(spath)]
-    else :
-      self._smodule = spath
+print("Test Directory: '{}'".format(sdirectory))
+print("Test Module: '{}'".format(smodule))
 
 
- def test_RunCommand(self):
-   print("{} - go ...".format(sys._getframe().f_code.co_name))
+def test_RunCommand():
+  print("{} - go ...".format(sys._getframe().f_code.co_name))
 
-   self._itestpause = 3
+  stestscript = 'command_script.py'
+  itestpause = 3
 
-   arrrs = runCommand("{}{} {} {}".format(self._sdirectory, self._stestscript, self._itestpause, self._iteststatus))
+  arrrs = runCommand("{}{} {} {}".format(sdirectory, stestscript, itestpause, iteststatus))
 
-   print("EXIT CODE: '{}'".format(arrrs[2]));
+  print("EXIT CODE: '{}'".format(arrrs[2]));
 
-   self.assertFalse(arrrs[0] == '', "STDOUT was not captured.")
+  assert arrrs[0] != '', "STDOUT was not captured."
 
-   print("STDOUT: '{}'".format(arrrs[0]));
+  print("STDOUT: '{}'".format(arrrs[0]));
 
-   self.assertFalse(arrrs[1] == '', "STDERR was not captured.")
+  assert arrrs[1] != '', "STDERR was not captured."
 
-   print("STDERR: '{}'".format(arrrs[1]));
+  print("STDERR: '{}'".format(arrrs[1]));
 
-   print("")
-
-
-if __name__ == "__main__":
-  unittest.main()
+  print("")
 
 
 ```

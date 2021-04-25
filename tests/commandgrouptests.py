@@ -2,7 +2,7 @@
 '''
 Tests to verify the CommandGroup Class Functionality
 
-@version: 2021-04-24
+@version: 2021-04-25
 
 @author: Bodo Hugo Barwich
 '''
@@ -60,6 +60,7 @@ class TestCommandGroup(unittest.TestCase):
     self._stestscript = 'command_script.py'
 
     cmdgrp = CommandGroup();
+    imaxpause = 3
 
     cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 2)\
     , {'name': 'command-script:2s'})
@@ -94,8 +95,42 @@ class TestCommandGroup(unittest.TestCase):
     print("Command Group Execution End - Time Now: '{}' s".format(itmend))
     print("Command Group Execution finished in '{}' ms".format(itm))
 
-    print("")
+    itm = int(itmend - itmstrt)
 
+    print("Command Group Execution Time '{} / {}' s".format(itm, imaxpause))
+
+    self.assertEqual(itm, imaxpause, "Command Group Execution longer than maximal Execution Time '{}' s"\
+    .format(imaxpause))
+
+    for icmd in range(0, cmdcnt) :
+      cmd = cmdgrp.getiCommand(icmd);
+
+      self.assertIsNotNone(cmd, "Command No. '$iprc': Not listed correctly".format(icmd))
+
+      if cmd is not None :
+        print("Command {}:".format(cmd.getNameComplete()))
+
+        scriptlog = cmd.report
+        scripterror = cmd.error
+        iscriptstatus = cmd.status
+
+        print("ERROR CODE: '{}'".format(cmd.code))
+        print("EXIT CODE: '{}'".format(iscriptstatus))
+
+        if scriptlog is not None :
+          print("STDOUT: '{}'".format(scriptlog))
+        else :
+          self.assertIsNotNone(scriptlog, "STDOUT was not captured")
+
+        if scripterror is not None :
+          print("STDERR: '{}'".format(scripterror))
+        else :
+          self.assertIsNotNone(scripterror, "STDERR was not captured")
+
+      #if cmd is not None
+    #for icmd in range(0, cmdcnt)
+
+    print("")
 
 
 
