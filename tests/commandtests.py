@@ -2,7 +2,7 @@
 '''
 Tests to verify the Command Class Functionality
 
-@version: 2021-04-16
+@version: 2021-04-25
 
 @author: Bodo Hugo Barwich
 '''
@@ -33,6 +33,8 @@ class TestCommand(unittest.TestCase):
     print("{} - go ...".format(sys._getframe().f_code.co_name))
 
     self._sdirectory = os.getcwd() + '/'
+    self._stestscript = 'command_script.py'
+    self._itestpause = 3
 
     spath = os.path.abspath(__file__);
 

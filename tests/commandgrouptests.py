@@ -26,7 +26,6 @@ class TestCommandGroup(unittest.TestCase):
   _sdirectory = ''
   _smodule = ''
   _stestscript = 'command_script.py'
-  _itestpause = 3
   _iteststatus = 4
 
 
@@ -34,6 +33,7 @@ class TestCommandGroup(unittest.TestCase):
     print("{} - go ...".format(sys._getframe().f_code.co_name))
 
     self._sdirectory = os.getcwd() + '/'
+    self._stestscript = 'command_script.py'
 
     spath = os.path.abspath(__file__);
 
