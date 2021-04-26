@@ -10,8 +10,8 @@ import sys
 import os
 import unittest
 import time
-import re
-from re import IGNORECASE
+#import re
+#from re import IGNORECASE
 
 sys.path.append("./")
 sys.path.append("../")
