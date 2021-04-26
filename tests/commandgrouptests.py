@@ -87,7 +87,8 @@ class TestCommandGroup(unittest.TestCase):
 
     print("Command Group Execution Start - Time Now: '{}' s".format(itmstrt))
 
-    self.assertTrue(cmdgrp.Run(), "Command Group Execution: Execution was not correct");
+    #Execute the Commands
+    bcmdrs = cmdgrp.Run()
 
     itmend = time.time()
     itm = (itmend - itmstrt) * 1000;
@@ -102,6 +103,8 @@ class TestCommandGroup(unittest.TestCase):
     print("Command Group ERROR CODE: '{}'".format(cmdgrp.code))
     print("Command Group STDOUT:\n'{}'".format(cmdgrp.report))
     print("Command Group STDERR:\n'{}'".format(cmdgrp.error))
+
+    self.assertTrue(bcmdrs, "Command Group Execution: Execution was not correct");
 
     self.assertEqual(itm, imaxpause, "Command Group Execution longer than maximal Execution Time '{}' s"\
     .format(imaxpause))
@@ -144,8 +147,15 @@ class TestCommandGroup(unittest.TestCase):
 
     self._stestscript = 'command_script.py'
 
-    cmdgrp = CommandGroup({'check': 2});
+    cmdgrp = CommandGroup()
     imaxpause = 9
+
+    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 9)\
+    , {'name': 'command-script:9s', 'profiling': True})
+
+    self.assertTrue(cmd.profiling, 'Profiling is not activated')
+
+    cmdgrp.Add(cmd)
 
     cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 3)\
     , {'name': 'command-script:3s', 'profiling': True})
@@ -161,12 +171,7 @@ class TestCommandGroup(unittest.TestCase):
 
     cmdgrp.Add(cmd)
 
-    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 9)\
-    , {'name': 'command-script:9s', 'profiling': True})
-
-    self.assertTrue(cmd.profiling, 'Profiling is not activated')
-
-    cmdgrp.Add(cmd)
+    cmdgrp.setReadTimeout(2)
 
     cmdcnt = cmdgrp.len
 
@@ -178,7 +183,8 @@ class TestCommandGroup(unittest.TestCase):
 
     print("Command Group Execution Start - Time Now: '{}' s".format(itmstrt))
 
-    self.assertTrue(cmdgrp.Run(), "Command Group Execution: Execution was not correct");
+    #Execute the Commands
+    bcmdrs = cmdgrp.Run()
 
     itmend = time.time()
     itm = (itmend - itmstrt) * 1000;
@@ -194,8 +200,7 @@ class TestCommandGroup(unittest.TestCase):
     print("Command Group STDOUT:\n'{}'".format(cmdgrp.report))
     print("Command Group STDERR:\n'{}'".format(cmdgrp.error))
 
-    #self.assertEqual(itm, imaxpause, "Command Group Execution longer than maximal Execution Time '{}' s"\
-    #.format(imaxpause))
+    self.assertTrue(bcmdrs, "Command Group Execution: Execution was not correct");
 
     for icmd in range(0, cmdcnt) :
       cmd = cmdgrp.getiCommand(icmd);
@@ -212,6 +217,106 @@ class TestCommandGroup(unittest.TestCase):
         print("Read Timeout: '{}'".format(cmd.read_timeout));
         print("Execution Time: '{}'".format(cmd.execution_time));
 
+        self.assertNotEqual(cmd.read_timeout, 0, "Read Timeout was not activated")
+        self.assertNotEqual(cmd.execution_time, -1, "Execution Time was not measured")
+
+        print("ERROR CODE: '{}'".format(cmd.code))
+        print("EXIT CODE: '{}'".format(iscriptstatus))
+
+        if scriptlog is not None :
+          print("STDOUT:\n'{}'".format(scriptlog))
+        else :
+          self.assertIsNotNone(scriptlog, "STDOUT was not captured")
+
+        if scripterror is not None :
+          print("STDERR:\n'{}'".format(scripterror))
+        else :
+          self.assertIsNotNone(scripterror, "STDERR was not captured")
+
+      #if cmd is not None
+    #for icmd in range(0, cmdcnt)
+
+    print("")
+
+
+  def test_CommandGroupProfilingQuiet(self):
+    print("{} - go ...".format(sys._getframe().f_code.co_name))
+
+    self._stestscript = 'quiet_script.py'
+
+    cmdgrp = CommandGroup()
+    imaxpause = 9
+
+    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 9)\
+    , {'name': 'quiet-script:9s', 'profiling': True})
+
+    self.assertTrue(cmd.profiling, 'Profiling is not activated')
+
+    cmdgrp.Add(cmd)
+
+    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 3)\
+    , {'name': 'quiet-script:3s', 'profiling': True})
+
+    self.assertTrue(cmd.profiling, 'Profiling is not activated')
+
+    cmdgrp.Add(cmd)
+
+    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 5)\
+    , {'name': 'quiet-script:5s', 'profiling': True})
+
+    self.assertTrue(cmd.profiling, 'Profiling is not activated')
+
+    cmdgrp.Add(cmd)
+
+    cmdcnt = cmdgrp.len
+
+    self.assertEqual(cmdcnt, 3, "scripts (count: '{}'): were not added correctly".format(cmdcnt))
+
+    cmdgrp.setCheckInterval(6)
+
+    self.assertNotEqual(cmdgrp.setCheckInterval(6), -1, "Check Interval was not activated")
+
+    itm = -1
+    itmstrt = time.time()
+    itmend = -1
+
+    print("Command Group Execution Start - Time Now: '{}' s".format(itmstrt))
+
+    #Execute the Commands
+    bcmdrs = cmdgrp.Run()
+
+    itmend = time.time()
+    itm = (itmend - itmstrt) * 1000;
+
+    print("Command Group Execution End - Time Now: '{}' s".format(itmend))
+    print("Command Group Execution finished in '{}' ms".format(itm))
+
+    itm = int(itmend - itmstrt)
+
+    print("Command Group Execution Time '{} / {}' s".format(itm, imaxpause))
+
+    print("Command Group ERROR CODE: '{}'".format(cmdgrp.code))
+    print("Command Group STDOUT:\n'{}'".format(cmdgrp.report))
+    print("Command Group STDERR:\n'{}'".format(cmdgrp.error))
+
+    self.assertTrue(bcmdrs, "Command Group Execution: Execution was not correct");
+
+    for icmd in range(0, cmdcnt) :
+      cmd = cmdgrp.getiCommand(icmd);
+
+      self.assertIsNotNone(cmd, "Command No. '$iprc': Not listed correctly".format(icmd))
+
+      if cmd is not None :
+        print("Command {}:".format(cmd.getNameComplete()))
+
+        scriptlog = cmd.report
+        scripterror = cmd.error
+        iscriptstatus = cmd.status
+
+        print("Read Timeout: '{}'".format(cmd.read_timeout));
+        print("Execution Time: '{}'".format(cmd.execution_time));
+
+        self.assertNotEqual(cmd.read_timeout, 0, "Read Timeout was not activated")
         self.assertNotEqual(cmd.execution_time, -1 , "Execution Time was not measured")
 
         print("ERROR CODE: '{}'".format(cmd.code))

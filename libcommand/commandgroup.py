@@ -170,7 +170,8 @@ class CommandGroup(object):
 
     if ors is None :
       #Create a new Command Object
-      ors = Command()
+      #Pass the Read Timeout to the new Object
+      ors = Command(None, {'readtimeout': self._read_timeout})
 
     #Add the Command Object to the List
     self._arr_commands.append(ors)
@@ -202,7 +203,6 @@ class CommandGroup(object):
       icmdidx = -1
 
       stmnow = None
-
 
       if self._check_interval > 0 \
       and self._read_timeout > 0 \
