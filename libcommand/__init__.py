@@ -5,7 +5,8 @@ Definition of the `libcommand` Package
 
 @author: Bodo Hugo Barwich
 '''
-__all__ = ['Command', 'runCommand', 'runCommandWithOptions']
+__all__ = ['Command', 'CommandGroup', 'runCommand', 'runCommandWithOptions']
 
 from .command import Command
 from .util import *
+from .commandgroup import CommandGroup

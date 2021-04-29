@@ -37,7 +37,6 @@ if slashpos != -1 :
 else :
   smodule = spath
 
-
 print("Test Directory: '{}'".format(sdirectory))
 print("Test Module: '{}'".format(smodule))
 
