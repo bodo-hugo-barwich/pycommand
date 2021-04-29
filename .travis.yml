@@ -12,4 +12,6 @@ python:
 #  - pip install -r requirements.txt
 # pytest - Test Suite for the Command Class
 script:
+  - tests/commandtests.py
+  - tests/commandgrouptests.py
   - pytest
