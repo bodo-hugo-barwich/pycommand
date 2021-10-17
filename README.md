@@ -1,4 +1,4 @@
-[![Automated Tests](https://github.com/bodo-hugo-barwich/pycommand/actions/workflows/python-package.yml/badge.svg)](https://github.com/bodo-hugo-barwich/pycommand/actions/workflows/python-package.yml) [![Build Status](https://travis-ci.com/bodo-hugo-barwich/pycommand.svg?branch=master)](https://travis-ci.com/bodo-hugo-barwich/pycommand)
+[![Automated Tests](https://github.com/bodo-hugo-barwich/pycommand/actions/workflows/python-package.yml/badge.svg)](https://github.com/bodo-hugo-barwich/pycommand/actions/workflows/python-package.yml) [![Build Status](https://app.travis-ci.com/bodo-hugo-barwich/pycommand.svg?branch=master)](https://app.travis-ci.com/bodo-hugo-barwich/pycommand)
 
 # Command
 
@@ -26,7 +26,7 @@ Some important Features are:
 This Module was conceived out of the need to launch multiple tasks simultaneously while still keeping each Log and Error Messages and Exit Codes separately. \
 As it is documented in [Python Documentation - Thread-based parallelism](https://docs.python.org/3.8/library/threading.html?highlight=thread#module-threading)
 and [Python - Global Interpreter Lock](https://docs.python.org/3.8/glossary.html#term-global-interpreter-lock)
-processor intensive tasks cannot run in _Python_ threads and are advised to be executed in multiple processes.
+processor intensive tasks cannot run in _Python_ threads and are advised to be executed in multiple processes. \
 The _Python_ implementation was derived from a prototype I developed at:
 [Multi Process Manager](https://stackoverflow.com/questions/50177534/why-do-pipes-from-child-processes-break-sometimes-and-sometimes-not)\
 The **Object Oriented Design** permits the implementation of the **[Command Pattern / Manager-Worker Pattern](https://en.wikipedia.org/wiki/Command_pattern)**.\
