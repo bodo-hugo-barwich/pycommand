@@ -174,7 +174,7 @@ def test_RunCommand():
 
 ```
 
-The Output shows how STDOUT, STDERR and EXIT Code are cleanly seperated.\
+The Output shows how STDOUT, STDERR and EXIT Code are cleanly separated.\
 This will produce the Output:
 ```text
 setUp - go ...

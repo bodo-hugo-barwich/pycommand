@@ -26,6 +26,11 @@ class Command(object):
   and stores them in Memory
 
   It offers Methods to access the Result Output and possible Errors
+
+  :see: `Command.report`
+  :see: `Command.error`
+  :see: `Command.status`
+  :see: `Command.code`
   '''
 
 
@@ -44,10 +49,7 @@ class Command(object):
     :param options: Additional options for the execution as key - value pairs
     :type options: dictionary
 
-    :see: `Command.report`
-    :see: `Command.error`
-    :see: `Command.status`
-    :see: `Command.code`
+    :see: `Command.setDictOptions`
     '''
 
     self._pid = -1
@@ -94,6 +96,24 @@ class Command(object):
 
 
   def setDictOptions(self, options = {}):
+    '''
+    This Method configures the `Command` object from a dictionary in the parameter `options`.
+    The recognized keys are:
+    * `name` - user defined name of the object
+    * `command` - the command to be run in the child process with its parameters
+    * `check`|`read`|`readtimeout` - time in seconds to watch the child process
+    * `timeout` - maximal execution time for the child process
+    * `debug` - enable debug messages
+    * `profiling` - enable time measurements
+
+    The values `command` and `profiling` can only be set when the child process is not running yet
+
+    :param options: Additional options for the execution as key - value pairs
+    :type options: dictionary
+
+    :see: `Command.read_timeout`
+    :see: `Command.timeout`
+    '''
     if('name' in options):
       #Set the Name
       self._name = options['name']
@@ -168,12 +188,11 @@ class Command(object):
 
   def Launch(self):
     '''
-    This Method launches the process defined by `commandline` in a separate child process
+    This Method launches the process defined by the `Command.command_line` Property in a separate child process
 
     :returns: Returns `True` if the launch of the child process succeeded
     :rtype: boolean
     '''
-
     brs = False
 
     if self._scommand != '' :
@@ -449,7 +468,6 @@ class Command(object):
     return brs
 
 
-
   def Terminate(self):
     sprcnm = self.getNameComplete()
 
@@ -600,7 +618,7 @@ class Command(object):
     '''
     Command.read_timeout Property which represents the time in seconds which the `Command` object
     will wait for output from the child process.
-    This must be a possitive Integer. Negative Integers are interpreted with the value "0"
+    This must be a positive Integer. Negative Integers are interpreted with the value "0"
 
     :returns: Time in seconds to watch the child process
     :rtype: integer
@@ -665,7 +683,7 @@ class Command(object):
   def getErrorCode(self):
     '''
     Command.code Property which holds the highest Error Code.
-    On successful execution this is "0" and on error this is a possitive Integer
+    On successful execution this is "0" and on error this is a positive Integer
     This value is populated by the `Command` library
 
     :returns: The Highest recorded Error Code
