@@ -46,6 +46,10 @@ jobs:
     - name: unittest - Command Class Tests
       run: tests/commandtests.py
         
+    # "unittest" Test Suite for the CommandGroup Class
+    - name: unittest - CommandGroup Class Tests
+      run: tests/commandgrouptests.py
+        
     # "pytest" Test Suite for the Command Class
     - name: pytest - Command Class Tests
       run: pytest
