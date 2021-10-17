@@ -2,7 +2,7 @@
 This Module provides the `Command` Class which launches a Single Child Process
 in asynchronous Mode and captures possible Errors.
 
-:version: 2021-04-25
+:version: 2021-10-17
 
 :author: Bodo Hugo Barwich
 '''
@@ -43,6 +43,11 @@ class Command(object):
     :type scommandline: string
     :param options: Additional options for the execution as key - value pairs
     :type options: dictionary
+
+    :see: `Command.report`
+    :see: `Command.error`
+    :see: `Command.status`
+    :see: `Command.code`
     '''
 
     self._pid = -1
@@ -600,6 +605,12 @@ class Command(object):
 
 
   def isRunning(self):
+    '''
+    This Method reports whether the Child Process is still running
+
+    :returns: Whether the Child Process is still running
+    :rtype: boolean
+    '''
     brng = False
 
     #The Process got a Process ID but did not get a Process Status Code yet
@@ -610,6 +621,12 @@ class Command(object):
 
 
   def getReportString(self):
+    '''
+    Command.report Property which represents all Report Messages
+
+    :returns: All Report Messages as single String joined seamlessly
+    :rtype: string
+    '''
     if self._sreport is None :
       self._sreport = ''.join(self._arr_rpt)
 
@@ -617,6 +634,12 @@ class Command(object):
 
 
   def getErrorString(self):
+    '''
+    Command.error Property which represents all Error Messages
+
+    :returns: All Error Messages as single String joined seamlessly
+    :rtype: string
+    '''
     if self._serror is None :
       self._serror = ''.join(self._arr_err)
 
@@ -624,10 +647,29 @@ class Command(object):
 
 
   def getErrorCode(self):
+    '''
+    Command.code Property which holds the highest Error Code.
+    On successful execution this is "0" and on error this is a possitive Integer
+    This value is populated by the `Command` library
+
+    :returns: The Highest recorded Error Code
+    :rtype: integer
+    '''
     return self._err_code
 
 
   def getProcessStatus(self):
+    '''
+    Command.status Property which holds the child process Exit Code.
+    This value is populated by the child process according to its logic.
+    On a running child process this is "-1" and on a finished child process this holds the Exit Code
+    according to the child process logic
+    On a killed process this will also be "-1" when no Exit Code could be read.
+    Mostly `Command.code` will hold the Error Code "4" then
+
+    :returns: The Child Process Exit Code
+    :rtype: integer
+    '''
     return self._process_status
 
 
