@@ -23,7 +23,10 @@ Some important Features are:
 * Streamlined Error Handling while still providing the Outputs
 
 ## Motivation
-This Module was conceived out of the need to launch multiple Tasks simultaneously while still keeping each Log and Error Messages and Exit Codes separately. \
+This Module was conceived out of the need to launch multiple tasks simultaneously while still keeping each Log and Error Messages and Exit Codes separately. \
+As it is documented in [Python Documentation - Thread-based parallelism](https://docs.python.org/3.8/library/threading.html?highlight=thread#module-threading)
+and [Python - Global Interpreter Lock](https://docs.python.org/3.8/glossary.html#term-global-interpreter-lock)
+processor intensive tasks cannot run in _Python_ threads and are advised to be executed in multiple processes.
 As I developed it as Prototype at:
 [Multi Process Manager](https://stackoverflow.com/questions/50177534/why-do-pipes-from-child-processes-break-sometimes-and-sometimes-not)\
 The **Object Oriented Design** permits the implementation of the **[Command Pattern / Manager-Worker Pattern](https://en.wikipedia.org/wiki/Command_pattern)**.\
