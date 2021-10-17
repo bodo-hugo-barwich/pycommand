@@ -597,10 +597,26 @@ class Command(object):
 
 
   def getReadTimeout(self):
+    '''
+    Command.read_timeout Property which represents the time in seconds which the `Command` object
+    will wait for output from the child process.
+    This must be a possitive Integer. Negative Integers are interpreted with the value "0"
+
+    :returns: Time in seconds to watch the child process
+    :rtype: integer
+    '''
     return self._read_timeout
 
 
   def getTimeout(self):
+    '''
+    Command.timeout Property which represents the time in seconds after which the `Command` object
+    must forcefully terminate the child process.
+    By default this is disabled with the value of "-1"
+
+    :returns: Time in seconds before forcefully terminating the child process
+    :rtype: integer
+    '''
     return self._execution_timeout
 
 
